@@ -14,6 +14,8 @@ interface ProductCardProps {
         tag?: string;
         bgColor: string;
         images?: string[];
+        slug: string;
+        subCollectionSlug?: string;
     };
     categorySlug: string;
 }
@@ -75,6 +77,11 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
     const router = useRouter();
     const [inWishlist, setInWishlist] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
+
+    const isSubcollectionPath = categorySlug.includes("/");
+    const detailHref = isSubcollectionPath
+        ? `/collections/${categorySlug}/${product.slug}`
+        : `/collections/${categorySlug}/${product.subCollectionSlug || "general"}/${product.slug}`;
 
     useEffect(() => {
         const updateState = () => {
@@ -183,7 +190,7 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
     return (
         <div className="group relative flex flex-col w-full">
             {/* Image Container */}
-            <Link href={`/${categorySlug}/${product.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-md bg-[#e3ded9] mb-4">
+            <Link href={detailHref} className="block relative aspect-[4/5] overflow-hidden rounded-md bg-[#e3ded9] mb-4">
                 <div 
                     className="absolute inset-0 w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
                     style={{ backgroundColor: product.bgColor }}
@@ -221,12 +228,12 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
             <div className="flex justify-between items-start gap-4">
                 <div>
                     <h3 className="text-[14px] font-medium text-slate-900 mb-1 leading-tight">
-                        <Link href={`/${categorySlug}/${product.id}`} className="hover:underline underline-offset-4">
+                        <Link href={detailHref} className="hover:underline underline-offset-4">
                             {product.name}
                         </Link>
                     </h3>
                     <p className="text-[12px] text-slate-500 mb-2">{product.material}</p>
-                    <p className="text-[13px] font-semibold text-slate-900">${product.price.toFixed(2)}</p>
+                    <p className="text-[13px] font-semibold text-slate-900">₹{product.price.toFixed(2)}</p>
                 </div>
                 
                 {/* Wishlist & Like Icons */}

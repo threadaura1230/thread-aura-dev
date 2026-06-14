@@ -28,7 +28,7 @@ export default async function ExploreSelection() {
         <div className="flex flex-col space-y-12 md:space-y-16">
           {subCollections.map((subCol) => {
             const parentCol = subCol.collection as any;
-            const linkHref = parentCol ? `/${parentCol.slug}/${subCol.slug}` : "/collections";
+            const linkHref = parentCol ? `/collections/${parentCol.slug}/${subCol.slug}` : "/collections";
 
             return (
               <div key={subCol._id.toString()} className="flex flex-col md:flex-row items-start md:items-center justify-between group">

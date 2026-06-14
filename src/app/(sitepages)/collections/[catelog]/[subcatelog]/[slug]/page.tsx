@@ -73,9 +73,9 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 <nav className="flex items-center text-[11px] font-medium tracking-wider uppercase text-slate-500 mb-12">
                     <Link href="/" className="hover:text-black cursor-pointer transition-colors">Home</Link>
                     <span className="mx-2">/</span>
-                    <Link href={`/${catelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displayCategory}</Link>
+                    <Link href={`/collections/${catelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displayCategory}</Link>
                     <span className="mx-2">/</span>
-                    <Link href={`/${catelog}/${subcatelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displaySubcategory}</Link>
+                    <Link href={`/collections/${catelog}/${subcatelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displaySubcategory}</Link>
                     <span className="mx-2">/</span>
                     <span className="text-black capitalize">{product.name}</span>
                 </nav>
@@ -104,7 +104,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                             <p className="text-[#b13d33] text-[12px] font-bold tracking-widest uppercase mt-2">
                                 {product.material}
                             </p>
-                            <p className="text-[24px] font-serif text-slate-900 mt-4">${product.price.toFixed(2)}</p>
+                            <p className="text-[24px] font-serif text-slate-900 mt-4">₹{product.price.toFixed(2)}</p>
                         </div>
 
                         {/* Description */}

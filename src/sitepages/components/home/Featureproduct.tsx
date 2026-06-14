@@ -98,7 +98,7 @@ export default function FeatureProduct() {
         className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] w-full"
       >
         {products.map((product) => {
-          const detailHref = `/${product.collection?.slug || "collections"}/${product.subCollection?.slug || "general"}/${product.slug}`;
+          const detailHref = `/collections/${product.collection?.slug || "collections"}/${product.subCollection?.slug || "general"}/${product.slug}`;
           return (
             <div 
               key={product._id} 
@@ -131,7 +131,7 @@ export default function FeatureProduct() {
                   {product.name}
                 </h3>
                 <p className="text-[#A4B5AE] text-[13px] font-light mb-5">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </p>
 
                 {/* Add to Cart Button */}

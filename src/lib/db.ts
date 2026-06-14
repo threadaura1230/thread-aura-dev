@@ -1,5 +1,13 @@
 import mongoose from 'mongoose';
 
+// Ensure all mongoose models are registered before queries or populate run
+import '@/models/User';
+import '@/models/admin/Admin';
+import '@/models/products/collections';
+import '@/models/products/subcollection';
+import '@/models/products/products';
+
+
 function getMongoUri(): string {
   const uri = process.env.MONGODB_URI;
   if (!uri) {

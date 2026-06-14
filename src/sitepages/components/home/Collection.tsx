@@ -121,7 +121,7 @@ export default function Collection() {
                                         {col.description.slice(0, 50)}...
                                     </p>
                                 )}
-                                <Link href={`/${col.slug}`} className="inline-block px-6 py-2.5 bg-white text-slate-900 text-[13px] font-medium rounded-[4px] hover:bg-slate-100 transition-colors">
+                                <Link href={`/collections/${col.slug}`} className="inline-block px-6 py-2.5 bg-white text-slate-900 text-[13px] font-medium rounded-[4px] hover:bg-slate-100 transition-colors">
                                     Explore
                                 </Link>
                             </div>

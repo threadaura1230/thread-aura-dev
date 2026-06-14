@@ -26,7 +26,7 @@ export async function GET() {
     const dbProducts = await Product.find({
       _id: { $in: wishlist },
       isActive: true,
-    }).populate("collection");
+    }).populate("collection").populate("subCollection");
 
     const wishlistProducts = dbProducts.map((p) => ({
       id: p._id.toString(),
@@ -36,6 +36,9 @@ export async function GET() {
       tag: p.tag || "",
       bgColor: p.bgColor || "#1f332a",
       images: p.images || [],
+      slug: p.slug,
+      subCollectionSlug: p.subCollection && typeof p.subCollection === "object" ? (p.subCollection as any).slug : "general",
+      categorySlug: p.collection && typeof p.collection === "object" ? (p.collection as any).slug : "collections",
     }));
 
     return NextResponse.json({ wishlist: wishlistProducts });

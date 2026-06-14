@@ -449,7 +449,7 @@ export default function ProductsManager() {
                       {prod.name}
                     </h3>
                     <span className="text-[14px] font-bold text-slate-800 flex-shrink-0">
-                      ${prod.price.toFixed(2)}
+                      ₹{prod.price.toFixed(2)}
                     </span>
                   </div>
 
@@ -544,7 +544,7 @@ export default function ProductsManager() {
 
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    Price ($) *
+                    Price (₹) *
                   </label>
                   <input
                     type="number"

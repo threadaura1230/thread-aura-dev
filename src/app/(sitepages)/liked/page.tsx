@@ -13,6 +13,8 @@ interface Product {
   tag?: string;
   bgColor: string;
   categorySlug: string;
+  slug: string;
+  subCollectionSlug: string;
 }
 
 export default function LikedProductsPage() {

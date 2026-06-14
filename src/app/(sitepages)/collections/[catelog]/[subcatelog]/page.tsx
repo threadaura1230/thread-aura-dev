@@ -12,10 +12,14 @@ interface PageProps {
         catelog: string;
         subcatelog: string;
     }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function SubcatalogPage({ params }: PageProps) {
+export default async function SubcatalogPage({ params, searchParams }: PageProps) {
     const { catelog, subcatelog } = await params;
+    const resolvedSearchParams = await searchParams;
+    const activeMaterial = resolvedSearchParams.material as string | undefined;
+    const activePrice = resolvedSearchParams.price as string | undefined;
     
     await dbConnect();
     
@@ -46,12 +50,39 @@ export default async function SubcatalogPage({ params }: PageProps) {
         );
     }
     
-    // Retrieve products belonging to this category and subcategory from MongoDB
-    const dbProducts = await Product.find({ 
+    // Fetch distinct active materials present specifically in this subcategory's products
+    const distinctMaterials = (await Product.distinct("material", {
+        collection: collection._id,
+        subCollection: subCollection._id,
+        isActive: true,
+    })).filter(Boolean) as string[];
+
+    // Build the query dynamically
+    const query: any = { 
         collection: collection._id, 
         subCollection: subCollection._id, 
         isActive: true 
-    }).sort({ createdAt: -1 });
+    };
+
+    if (activeMaterial) {
+        const materials = activeMaterial.split(",");
+        query.material = { $in: materials };
+    }
+
+    if (activePrice) {
+        if (activePrice === "under-500") {
+            query.price = { $lt: 500 };
+        } else if (activePrice === "500-1000") {
+            query.price = { $gte: 500, $lte: 1000 };
+        } else if (activePrice === "1000-2000") {
+            query.price = { $gte: 1000, $lte: 2000 };
+        } else if (activePrice === "over-2000") {
+            query.price = { $gt: 2000 };
+        }
+    }
+
+    // Retrieve products belonging to this category and subcategory from MongoDB
+    const dbProducts = await Product.find(query).sort({ createdAt: -1 });
     
     // Map Mongoose documents to plain objects for ProductCard
     const subcategoryProducts = dbProducts.map((p) => ({
@@ -62,6 +93,8 @@ export default async function SubcatalogPage({ params }: PageProps) {
         tag: p.tag || "",
         bgColor: p.bgColor || "#1f332a",
         images: p.images || [],
+        slug: p.slug,
+        subCollectionSlug: subCollection.slug,
     }));
 
     return (
@@ -72,7 +105,7 @@ export default async function SubcatalogPage({ params }: PageProps) {
                     <nav className="flex items-center text-[11px] font-medium tracking-wider uppercase text-slate-500 mb-6">
                         <Link href="/" className="hover:text-black transition-colors">Home</Link>
                         <span className="mx-2">/</span>
-                        <Link href={`/${catelog}`} className="hover:text-black transition-colors capitalize">{collection.name}</Link>
+                        <Link href={`/collections/${catelog}`} className="hover:text-black transition-colors capitalize">{collection.name}</Link>
                         <span className="mx-2">/</span>
                         <span className="text-black capitalize">{subCollection.name}</span>
                     </nav>
@@ -87,7 +120,7 @@ export default async function SubcatalogPage({ params }: PageProps) {
 
                 <div className="flex flex-col md:flex-row gap-8 lg:gap-12 relative">
                     {/* Sidebar */}
-                    <FilterSidebar />
+                    <FilterSidebar materials={distinctMaterials} />
 
                     {/* Product Grid */}
                     <div className="flex-1">
