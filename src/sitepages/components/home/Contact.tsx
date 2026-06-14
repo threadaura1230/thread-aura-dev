@@ -9,12 +9,12 @@ export default function Contact() {
       <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full bg-[#12221c]">
         {/* Fallback placeholder visible if image isn't loaded */}
         <div className="absolute inset-0 flex items-center justify-center text-[#364B44] text-sm text-center px-6">
-          Image Placeholder<br/>(Save your bangle photo as "contact-bangles.jpg" in the "public" folder)
+          Image Placeholder<br/>(Save your bangle photo as "contact-bangles.png" in the "public" folder)
         </div>
         
-        {/* We use the filename 'contact-bangles.jpg' - the user needs to add their uploaded image to the public folder with this name */}
+        {/* We use the filename 'contact-bangles.png' - the user needs to add their uploaded image to the public folder with this name */}
         <Image
-          src="/contact-bangles.jpg" 
+          src="/contact-bangles.png" 
           alt="Pink Silk Thread Bangles"
           fill
           className="object-cover relative z-10"

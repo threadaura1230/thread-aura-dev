@@ -29,7 +29,7 @@ const SubCollectionSchema = new mongoose.Schema(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, suppressReservedKeysWarning: true }
 );
 
 export default mongoose.models.SubCollection ||

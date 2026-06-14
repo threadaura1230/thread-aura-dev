@@ -31,12 +31,34 @@ const ProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCollection",
     },
+    material: {
+      type: String,
+      default: "",
+    },
+    tag: {
+      type: String,
+      default: "",
+    },
+    bgColor: {
+      type: String,
+      default: "#1f332a",
+    },
+    sizes: {
+      type: [String],
+      default: ["2.4", "2.6", "2.8"],
+    },
+    details: [
+      {
+        title: { type: String, required: true },
+        content: { type: String, required: true },
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, suppressReservedKeysWarning: true }
 );
 
 export default mongoose.models.Product ||

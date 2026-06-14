@@ -1,4 +1,11 @@
-import { Heart, ShieldCheck, Truck, RefreshCw } from "lucide-react";
+import { ShieldCheck, Truck, RefreshCw } from "lucide-react";
+import ProductDetailActions from "@/sitepages/components/catalog/ProductDetailActions";
+import ImageGallery from "@/sitepages/components/catalog/ImageGallery";
+import dbConnect from "@/lib/db";
+import Product from "@/models/products/products";
+import Collection from "@/models/products/collections";
+import SubCollection from "@/models/products/subcollection";
+import Link from "next/link";
 
 interface ProductPageProps {
     params: Promise<{
@@ -11,23 +18,51 @@ interface ProductPageProps {
 export default async function ProductDetailPage({ params }: ProductPageProps) {
     const { catelog, subcatelog, slug } = await params;
 
-    // Capitalize and format slugs for presentation
-    const formattedSlug = slug.replace(/-/g, ' ');
-    const displayCategory = catelog.replace(/-/g, ' ');
-    const displaySubcategory = subcatelog.replace(/-/g, ' ');
+    await dbConnect();
 
-    // Mock detailed product
+    // Query database for product by its slug
+    const dbProduct = await Product.findOne({ slug, isActive: true })
+        .populate("collection")
+        .populate("subCollection");
+
+    if (!dbProduct) {
+        return (
+            <div className="bg-[#F1EFE7] min-h-screen py-32 px-6 flex flex-col items-center justify-center text-center">
+                <h1 className="font-serif text-[36px] text-slate-900 mb-4 capitalize">
+                    Product Not Found
+                </h1>
+                <p className="text-slate-600 max-w-md mb-8">
+                    The requested product &quot;{slug.replace(/-/g, ' ')}&quot; could not be found or is currently inactive.
+                </p>
+                <Link 
+                    href="/" 
+                    className="px-6 py-3 bg-[#0F3A2A] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#134A31] transition-colors rounded"
+                >
+                    Back to Home
+                </Link>
+            </div>
+        );
+    }
+
+    const displayCategory = dbProduct.collection?.name || catelog.replace(/-/g, ' ');
+    const displaySubcategory = dbProduct.subCollection?.name || subcatelog.replace(/-/g, ' ');
+
     const product = {
-        name: formattedSlug,
-        price: 145.00,
-        material: "100% Organic Mulberry Silk & 24K Gold Zari Thread",
-        description: "Meticulously hand-wrapped by master weavers, this bangle features custom metallic gold zari thread interwoven with premium, high-lustre Mulberry silk. The structure is built over an ultra-lightweight, hypoallergenic core designed for unmatched all-day comfort. Each loop of thread is pulled to exact tension to ensure a lifetime of perfect geometry.",
-        sizes: ["2.4", "2.6", "2.8"],
-        details: [
-            { title: "Materials & Origin", content: "Handmade in our artisanal studio. Sourced with sustainable GOTS certified organic silk threads and high-grade core structure." },
-            { title: "Care Instructions", content: "To protect the delicate silk threads, avoid exposure to moisture, perfumes, and direct heat. Clean gently with a soft microfibre cloth." },
-            { title: "Shipping & Returns", content: "Complementary shipping on all domestic orders. Elegantly packed in a signature Thread-aura gift box. Returns accepted within 14 days." }
-        ]
+        id: dbProduct._id.toString(),
+        name: dbProduct.name,
+        price: dbProduct.price,
+        material: dbProduct.material || "100% Premium Thread & Zari Thread",
+        description: dbProduct.description || "Meticulously hand-wrapped by master weavers, this bangle features custom metallic gold zari thread interwoven with premium threads. Built over an ultra-lightweight, hypoallergenic core designed for unmatched all-day comfort.",
+        sizes: (dbProduct.sizes as string[]) || ["2.4", "2.6", "2.8"],
+        bgColor: dbProduct.bgColor || "#1f332a",
+        images: (dbProduct.images as string[]) || [],
+        details: dbProduct.details && dbProduct.details.length > 0 
+            ? (dbProduct.details as { title: string; content: string }[]) 
+            : [
+                { title: "Materials & Origin", content: "Handmade in our artisanal studio. Sourced with sustainable GOTS certified organic silk threads and high-grade core structure." },
+                { title: "Care Instructions", content: "To protect the delicate silk threads, avoid exposure to moisture, perfumes, and direct heat. Clean gently with a soft microfibre cloth." },
+                { title: "Shipping & Returns", content: "Complementary shipping on all domestic orders. Elegantly packed in a signature Thread-aura gift box. Returns accepted within 14 days." }
+            ]
     };
 
     return (
@@ -36,11 +71,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 
                 {/* Breadcrumbs */}
                 <nav className="flex items-center text-[11px] font-medium tracking-wider uppercase text-slate-500 mb-12">
-                    <span className="hover:text-black cursor-pointer transition-colors">Home</span>
+                    <Link href="/" className="hover:text-black cursor-pointer transition-colors">Home</Link>
                     <span className="mx-2">/</span>
-                    <span className="hover:text-black cursor-pointer transition-colors capitalize">{displayCategory}</span>
+                    <Link href={`/${catelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displayCategory}</Link>
                     <span className="mx-2">/</span>
-                    <span className="hover:text-black cursor-pointer transition-colors capitalize">{displaySubcategory}</span>
+                    <Link href={`/${catelog}/${subcatelog}`} className="hover:text-black cursor-pointer transition-colors capitalize">{displaySubcategory}</Link>
                     <span className="mx-2">/</span>
                     <span className="text-black capitalize">{product.name}</span>
                 </nav>
@@ -49,20 +84,12 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
                     
                     {/* Left Column: Image Gallery */}
-                    <div className="space-y-4">
-                        <div className="aspect-[4/5] rounded-lg bg-[#1f332a] w-full flex items-center justify-center relative overflow-hidden group">
-                            <div className="absolute inset-0 flex items-center justify-center text-white/40 text-sm font-semibold tracking-widest uppercase">
-                                Primary Product Image
-                            </div>
-                        </div>
-                        {/* Thumbnails */}
-                        <div className="grid grid-cols-4 gap-4">
-                            {[1, 2, 3, 4].map((idx) => (
-                                <button key={idx} className="aspect-square bg-black/5 hover:bg-black/10 rounded border border-transparent hover:border-[#073623] transition-all flex items-center justify-center text-[10px] text-slate-400 font-medium">
-                                    View {idx}
-                                </button>
-                            ))}
-                        </div>
+                    <div>
+                        <ImageGallery 
+                            images={product.images} 
+                            bgColor={product.bgColor} 
+                            productName={product.name} 
+                        />
                     </div>
 
                     {/* Right Column: Sticky Product Info */}
@@ -103,15 +130,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                             </div>
                         </div>
 
-                        {/* CTA Buttons */}
-                        <div className="flex gap-4">
-                            <button className="flex-1 py-4 bg-[#073623] hover:bg-[#0c4a31] text-white text-[13px] font-bold tracking-widest uppercase rounded transition-colors shadow-sm">
-                                Add to Bag
-                            </button>
-                            <button className="p-4 border border-slate-300 rounded hover:border-slate-800 transition-colors flex items-center justify-center">
-                                <Heart className="w-5 h-5 text-slate-600 hover:text-red-500 transition-colors" />
-                            </button>
-                        </div>
+                        {/* CTA & Wishlist/Liked Buttons */}
+                        <ProductDetailActions productId={product.id} />
 
                         {/* Trust Badges */}
                         <div className="grid grid-cols-3 gap-4 pt-6 border-t border-black/10 text-center">
@@ -152,3 +172,4 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
     );
 }
+
