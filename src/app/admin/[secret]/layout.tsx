@@ -122,7 +122,7 @@ export default function AdminLayout({ children, params }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#140620] text-white">
+    <div className="min-h-screen bg-[#F1EFE7] text-slate-800">
       <Sidebar
         isOpen={sidebarOpen}
         onToggle={toggleSidebar}

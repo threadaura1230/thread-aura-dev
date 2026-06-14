@@ -29,12 +29,12 @@ export function verifyToken(token: string): JWTPayload | null {
 
 export async function getAuthToken(): Promise<string | null> {
   const cookieStore = await cookies();
-  return cookieStore.get("enteropia_token")?.value || null;
+  return cookieStore.get("admin_session")?.value || null;
 }
 
 export async function setAuthToken(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set("enteropia_token", token, {
+  cookieStore.set("admin_session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -45,7 +45,7 @@ export async function setAuthToken(token: string) {
 
 export async function removeAuthToken() {
   const cookieStore = await cookies();
-  cookieStore.delete("enteropia_token");
+  cookieStore.delete("admin_session");
 }
 
 export async function isAuthenticated(): Promise<JWTPayload | null> {

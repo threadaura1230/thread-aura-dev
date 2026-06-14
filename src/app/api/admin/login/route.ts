@@ -123,18 +123,18 @@ export async function POST(req: Request) {
     // Send the verification code via email
     const emailResponse = await sendMail({
       to: email,
-      subject: "enteropia Admin Login Verification Code",
+      subject: "Thread-aura Admin Login Verification Code",
       html: `
-        <div style="font-family: sans-serif; background-color: #140620; color: #ffffff; padding: 30px; border-radius: 12px; max-width: 500px; margin: auto; border: 1px solid rgba(163, 86, 219, 0.2);">
-          <h2 style="color: #a356db; text-align: center; margin-bottom: 20px;">enteropia Admin Portal</h2>
+        <div style="font-family: 'Georgia', serif; background-color: #F1EFE7; color: #1e293b; padding: 30px; border-radius: 12px; max-width: 500px; margin: auto; border: 1px solid rgba(0,0,0,0.06);">
+          <h2 style="color: #073623; text-align: center; margin-bottom: 20px; font-family: 'Georgia', serif;">Thread-aura Admin Portal</h2>
           <p>Hello,</p>
-          <p>We received a request to log in to the enteropia Admin Console. Please use the following One-Time Password (OTP) to complete your verification:</p>
-          <div style="background-color: #221035; border: 1px solid rgba(163, 86, 219, 0.3); border-radius: 8px; padding: 15px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #ffffff; margin: 25px 0;">
+          <p>We received a request to log in to the Thread-aura Admin Console. Please use the following One-Time Password (OTP) to complete your verification:</p>
+          <div style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 15px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px; color: #073623; margin: 25px 0;">
             ${generatedOtp}
           </div>
-          <p style="font-size: 13px; color: rgba(255, 255, 255, 0.6); text-align: center;">This verification code is valid for 5 minutes. Do not share this code with anyone.</p>
-          <hr style="border: 0; border-top: 1px solid rgba(163, 86, 219, 0.1); margin: 25px 0;">
-          <p style="font-size: 11px; color: rgba(255, 255, 255, 0.4); text-align: center; margin: 0;">This is an automated security message. Please do not reply to this email.</p>
+          <p style="font-size: 13px; color: #64748b; text-align: center;">This verification code is valid for 5 minutes. Do not share this code with anyone.</p>
+          <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.06); margin: 25px 0;">
+          <p style="font-size: 11px; color: #94a3b8; text-align: center; margin: 0;">This is an automated security message. Please do not reply to this email.</p>
         </div>
       `,
     });

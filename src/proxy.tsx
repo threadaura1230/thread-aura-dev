@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     const path = url.pathname;
 
     // We only target paths starting with /admin
     if (path.startsWith("/admin")) {
-        const secretSegment = process.env.NEXT_PUBLIC_ADMIN_SECRET_PATH || "master_console-dp1230";
+        const secretSegment = process.env.ADMIN_SECRET_PATH;
         const parts = path.split("/");
 
         // URL format: /admin/[secret]/[subpage]

@@ -77,15 +77,15 @@ export default function ImageUpload({
 
     return (
         <div className="space-y-2">
-            <label className="block text-xs font-semibold text-purple-300/80 uppercase tracking-wider">
+            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                 {label}
             </label>
 
             <div
                 className={`relative flex items-center justify-center rounded-xl border-2 border-dashed transition-colors cursor-pointer
         ${value
-                        ? "border-emerald-500/30 bg-emerald-500/5"
-                        : "border-purple-900/30 bg-[#221035] hover:border-purple-500 hover:bg-[#2b1642]"}
+                        ? "border-[#073623]/25 bg-[#073623]/[0.03]"
+                        : "border-black/[0.1] bg-[#F1EFE7]/60 hover:border-[#073623]/40 hover:bg-[#F1EFE7]"}
         ${uploading ? "pointer-events-none opacity-70" : ""}`}
                 style={{ minHeight: "140px" }}
                 onClick={() => !uploading && inputRef.current?.click()}
@@ -93,9 +93,9 @@ export default function ImageUpload({
                 onDrop={handleDrop}
             >
                 {uploading ? (
-                    <div className="flex flex-col items-center gap-2 py-8 text-emerald-400">
+                    <div className="flex flex-col items-center gap-2 py-8 text-[#073623]">
                         <Loader2 size={28} className="animate-spin" />
-                        <span className="text-xs font-semibold">Uploading...</span>
+                        <span className="text-[12px] font-semibold">Uploading...</span>
                     </div>
                 ) : value ? (
                     <>
@@ -111,31 +111,31 @@ export default function ImageUpload({
                                 e.stopPropagation();
                                 onChange("");
                             }}
-                            className="absolute top-2 right-2 p-1 bg-[#140620] rounded-full shadow border border-purple-900/30 text-purple-400 hover:text-red-400 hover:border-red-500/50 transition-colors"
+                            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow border border-black/[0.08] text-slate-400 hover:text-[#8C2323] hover:border-[#8C2323]/30 transition-colors"
                         >
                             <X size={14} />
                         </button>
 
                         <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-[#140620]/90 border border-emerald-950/40 rounded-full px-3 py-0.5 shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#073623] bg-white/90 border border-black/[0.06] rounded-full px-3 py-0.5 shadow-sm">
                                 <Upload size={10} /> Click to replace
                             </span>
                         </div>
                     </>
                 ) : (
-                    <div className="flex flex-col items-center gap-2 py-8 text-purple-400/80">
+                    <div className="flex flex-col items-center gap-2 py-8 text-slate-400">
                         <ImageIcon size={28} />
 
                         <div className="text-center">
-                            <p className="text-sm font-semibold text-white">
+                            <p className="text-[13px] font-medium text-slate-700">
                                 Click or drag & drop
                             </p>
-                            <p className="text-xs text-gray-400 mt-0.5">
+                            <p className="text-[11px] text-slate-400 mt-0.5">
                                 PNG, JPG, WebP up to 5 MB
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-1.5 mt-1 px-4 py-1.5 bg-emerald-600 rounded-lg text-white text-xs font-bold shadow-sm hover:bg-emerald-700 transition-colors">
+                        <div className="flex items-center gap-1.5 mt-1 px-4 py-1.5 bg-[#073623] rounded-lg text-white text-[12px] font-medium shadow-sm hover:bg-[#0c4a31] transition-colors">
                             <Upload size={13} /> Upload Image
                         </div>
                     </div>
@@ -151,12 +151,12 @@ export default function ImageUpload({
             </div>
 
             {uploadError && (
-                <p className="text-xs text-red-500 font-medium">{uploadError}</p>
+                <p className="text-[12px] text-[#8C2323] font-medium">{uploadError}</p>
             )}
 
             {value && (
                 <p
-                    className="text-[11px] text-gray-400 font-mono truncate"
+                    className="text-[11px] text-slate-400 font-mono truncate"
                     title={value}
                 >
                     {value}

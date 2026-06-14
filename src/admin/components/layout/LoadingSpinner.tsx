@@ -16,7 +16,7 @@ export default function LoadingSpinner({
 
     const spinner = (
         <div
-            className={`${sizeClasses[size]} border-purple-950/40 border-t-[#a356db] rounded-full animate-spin`}
+            className={`${sizeClasses[size]} border-[#073623]/20 border-t-[#073623] rounded-full animate-spin`}
         />
     );
 
@@ -27,7 +27,7 @@ export default function LoadingSpinner({
 
     // Otherwise, return spinner in a centered container
     return (
-        <div className={`flex items-center justify-center min-h-screen ${className}`}>
+        <div className={`flex items-center justify-center min-h-screen bg-[#F1EFE7] ${className}`}>
             {spinner}
         </div>
     );
