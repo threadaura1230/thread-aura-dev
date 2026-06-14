@@ -4,12 +4,15 @@ import { Search, Heart, ShoppingBag, User, LogOut, ThumbsUp } from "lucide-react
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Header() {
     const [user, setUser] = useState<{ id: string; name?: string; email: string; avatar?: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         fetch("/api/auth/verify")
@@ -55,6 +58,13 @@ export default function Header() {
     // Custom slow, cinematic smooth scroll function
     const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
         e.preventDefault();
+        
+        if (pathname !== "/") {
+            // If on another page, navigate to home page with the hash
+            router.push(`/#${id}`);
+            return;
+        }
+
         const element = document.getElementById(id);
         if (element) {
             const targetPosition = element.getBoundingClientRect().top + window.scrollY;

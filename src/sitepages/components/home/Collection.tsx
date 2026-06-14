@@ -112,12 +112,14 @@ export default function Collection() {
                                 )}
                                 <h3 className="font-serif text-[22px] md:text-3xl text-white mb-3">{col.name}</h3>
                                 {style.isTall && col.description && (
-                                    <p className="text-white/90 text-[13px] mb-6 leading-relaxed hidden md:block">
+                                    <p className="text-white/90 text-[13px] leading-relaxed max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-64 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-6">
                                         {col.description}
                                     </p>
                                 )}
                                 {!style.isTall && col.description && (
-                                    <p className="text-white/90 text-[13px] mb-4">{col.description.slice(0, 50)}...</p>
+                                    <p className="text-white/90 text-[13px] max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-32 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-4">
+                                        {col.description.slice(0, 50)}...
+                                    </p>
                                 )}
                                 <Link href={`/${col.slug}`} className="inline-block px-6 py-2.5 bg-white text-slate-900 text-[13px] font-medium rounded-[4px] hover:bg-slate-100 transition-colors">
                                     Explore

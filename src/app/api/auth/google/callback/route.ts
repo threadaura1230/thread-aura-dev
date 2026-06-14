@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateUserToken } from "@/lib/userAuth";
+import { setUserTokens } from "@/lib/userAuth";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
 
@@ -113,23 +113,14 @@ export async function GET(request: Request) {
     }
   }
 
-  // Generate JWT for user session
-  const token = generateUserToken({
+  // Set user session cookies (access_token & refresh_token)
+  await setUserTokens({
     id: user._id.toString(),
     email: user.email,
     role: user.role,
   });
 
   const response = NextResponse.redirect(new URL("/", request.url));
-
-  // Set user session cookie
-  response.cookies.set("user_session", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-    path: "/",
-  });
 
   // Clear the CSRF state cookie
   response.cookies.set("oauth_state", "", { maxAge: 0, path: "/" });

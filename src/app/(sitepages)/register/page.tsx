@@ -11,18 +11,17 @@ const ERROR_MESSAGES: Record<string, string> = {
   google_token_failed: "Failed to verify with Google. Please try again.",
   google_profile_failed: "Could not retrieve your Google profile. Please try again.",
   google_signup_failed: "Account creation failed. Please try again.",
-  auth_required_wishlist: "Please sign in to add items to your wishlist.",
-  auth_required_liked: "Please sign in to like products.",
 };
 
-
-function LoginContent() {
+function RegisterContent() {
   const searchParams = useSearchParams();
   const oauthError = searchParams.get("error");
   const initialErrorMessage = oauthError ? ERROR_MESSAGES[oauthError] || "Something went wrong. Please try again." : null;
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(initialErrorMessage);
   const [loading, setLoading] = useState(false);
 
@@ -30,28 +29,42 @@ function LoginContent() {
     e.preventDefault();
     setError(null);
 
-    if (!email.trim() || !password) {
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
       setError("All fields are required.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Invalid email or password.");
+        setError(data.error || "Failed to register. Please try again.");
       } else {
-        // Successful login, hard redirect to root to refresh headers and user context
+        // Successful registration, perform hard navigation to home to reload state
         window.location.href = "/";
       }
     } catch (err) {
@@ -103,10 +116,10 @@ function LoginContent() {
               className="text-2xl font-medium tracking-wide text-[#0f3a2a] mb-1"
               style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
-              Welcome
+              Create Account
             </h1>
             <p className="text-xs text-slate-500">
-              Sign in to your Thread-aura account
+              Sign up to unlock wishlist, likes, and more
             </p>
           </div>
 
@@ -135,6 +148,21 @@ function LoginContent() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <label htmlFor="name" className="block text-[10px] font-medium text-slate-600 mb-1 uppercase tracking-wider">
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full rounded-xl border border-black/[0.08] bg-white/80 px-4 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0f3a2a] focus:ring-1 focus:ring-[#0f3a2a] focus:outline-none transition-all"
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-[10px] font-medium text-slate-600 mb-1 uppercase tracking-wider">
                 Email Address
@@ -165,6 +193,21 @@ function LoginContent() {
               />
             </div>
 
+            <div>
+              <label htmlFor="confirmPassword" className="block text-[10px] font-medium text-slate-600 mb-1 uppercase tracking-wider">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-xl border border-black/[0.08] bg-white/80 px-4 py-2 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0f3a2a] focus:ring-1 focus:ring-[#0f3a2a] focus:outline-none transition-all"
+              />
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -176,10 +219,10 @@ function LoginContent() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Signing In...
+                  Creating Account...
                 </>
               ) : (
-                "Sign In"
+                "Create Account"
               )}
             </button>
           </form>
@@ -199,7 +242,7 @@ function LoginContent() {
           {/* Google Sign-In Button */}
           <a
             href="/api/auth/google"
-            id="google-signin-button"
+            id="google-signup-button"
             className="group flex items-center justify-center gap-2.5 w-full rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:shadow-md hover:border-black/[0.12] hover:bg-gray-50 active:scale-[0.98]"
           >
             {/* Google "G" icon */}
@@ -230,21 +273,21 @@ function LoginContent() {
             <span>Continue with Google</span>
           </a>
 
-          {/* Don't have an account? */}
+          {/* Already have an account? */}
           <div className="mt-4 text-center text-xs text-slate-500">
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="font-medium text-[#0f3a2a] hover:text-[#134a31] underline underline-offset-2 transition-colors"
             >
-              Sign Up
+              Sign In
             </Link>
           </div>
         </div>
 
         {/* Footer */}
         <p className="mt-8 text-center text-xs text-slate-400">
-          By signing in, you agree to our{" "}
+          By signing up, you agree to our{" "}
           <Link
             href="/"
             className="underline underline-offset-2 hover:text-slate-600 transition-colors"
@@ -264,7 +307,7 @@ function LoginContent() {
   );
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <Suspense
       fallback={
@@ -273,7 +316,7 @@ export default function LoginPage() {
         </div>
       }
     >
-      <LoginContent />
+      <RegisterContent />
     </Suspense>
   );
 }
