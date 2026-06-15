@@ -6,6 +6,7 @@ import '@/models/admin/Admin';
 import '@/models/products/collections';
 import '@/models/products/subcollection';
 import '@/models/products/products';
+import '@/models/Order';
 
 
 function getMongoUri(): string {

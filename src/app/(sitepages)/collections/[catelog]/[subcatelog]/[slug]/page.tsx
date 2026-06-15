@@ -56,6 +56,9 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         sizes: (dbProduct.sizes as string[]) || ["2.4", "2.6", "2.8"],
         bgColor: dbProduct.bgColor || "#1f332a",
         images: (dbProduct.images as string[]) || [],
+        slug: dbProduct.slug,
+        categorySlug: catelog,
+        subCollectionSlug: subcatelog,
         details: dbProduct.details && dbProduct.details.length > 0 
             ? (dbProduct.details as { title: string; content: string }[]) 
             : [
@@ -112,26 +115,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                             {product.description}
                         </p>
 
-                        {/* Size Selector */}
-                        <div>
-                            <div className="flex justify-between items-center mb-3">
-                                <span className="text-[12px] text-slate-500 font-bold uppercase tracking-wider">Select Size (Bangle Inner Diameter)</span>
-                                <button className="text-[11px] text-slate-900 underline underline-offset-4 hover:text-black">Size Guide</button>
-                            </div>
-                            <div className="flex gap-3">
-                                {product.sizes.map((size) => (
-                                    <button 
-                                        key={size}
-                                        className="w-14 h-11 border border-slate-300 rounded hover:border-[#073623] hover:text-[#073623] font-sans text-[13px] font-medium transition-colors flex items-center justify-center cursor-pointer"
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* CTA & Wishlist/Liked Buttons */}
-                        <ProductDetailActions productId={product.id} />
+                        {/* CTA & Wishlist/Liked Buttons (including Size Selector) */}
+                        <ProductDetailActions product={product} />
 
                         {/* Trust Badges */}
                         <div className="grid grid-cols-3 gap-4 pt-6 border-t border-black/10 text-center">

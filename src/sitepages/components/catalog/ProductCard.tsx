@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Heart, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
     product: {
@@ -14,6 +15,7 @@ interface ProductCardProps {
         tag?: string;
         bgColor: string;
         images?: string[];
+        sizes?: string[];
         slug: string;
         subCollectionSlug?: string;
     };
@@ -75,8 +77,16 @@ async function fetchUserData() {
 
 export default function ProductCard({ product, categorySlug }: ProductCardProps) {
     const router = useRouter();
+    const { addToCart } = useCart();
     const [inWishlist, setInWishlist] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
+
+    const handleAddToCart = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : "2.4";
+        await addToCart(product, defaultSize, 1);
+    };
 
     const isSubcollectionPath = categorySlug.includes("/");
     const detailHref = isSubcollectionPath
@@ -218,7 +228,10 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
 
                 {/* Quick Add Button (appears on hover) */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out z-10">
-                    <button className="w-full bg-white/90 backdrop-blur-sm text-slate-900 text-[12px] font-semibold tracking-wider uppercase py-3 hover:bg-white transition-colors shadow-lg">
+                    <button 
+                        onClick={handleAddToCart}
+                        className="w-full bg-white/90 backdrop-blur-sm text-slate-900 text-[12px] font-semibold tracking-wider uppercase py-3 hover:bg-white transition-colors shadow-lg cursor-pointer"
+                    >
                         Add to Bag
                     </button>
                 </div>

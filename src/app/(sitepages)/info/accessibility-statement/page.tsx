@@ -102,8 +102,9 @@ export default function AccessibilityStatementPage() {
               </h3>
               <div className="w-8 h-[1px] bg-[#0f3a2a] my-2"></div>
               <p className="font-light">
-                500 Silk Weaver St.<br />
-                New York, NY 10001
+                Near PES university,<br />
+                Ring Road campus, hoskerehally,<br />
+                Bengaluru 570085
               </p>
               <div className="space-y-1 pt-2 border-t border-black/5">
                 <p className="font-light">

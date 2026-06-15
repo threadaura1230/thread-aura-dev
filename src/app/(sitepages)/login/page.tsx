@@ -51,8 +51,9 @@ function LoginContent() {
       if (!res.ok) {
         setError(data.error || "Invalid email or password.");
       } else {
-        // Successful login, hard redirect to root to refresh headers and user context
-        window.location.href = "/";
+        // Successful login, hard redirect to custom redirect path or root
+        const redirectPath = searchParams.get("redirect") || "/";
+        window.location.href = redirectPath;
       }
     } catch (err) {
       console.error(err);
