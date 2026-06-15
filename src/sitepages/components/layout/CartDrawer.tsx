@@ -41,6 +41,7 @@ export default function CartDrawer() {
             <button 
               onClick={closeCart}
               className="text-slate-500 hover:text-black transition-colors p-1 rounded-full hover:bg-black/5 cursor-pointer"
+              aria-label="Close cart"
             >
               <X className="w-5 h-5" />
             </button>
@@ -113,6 +114,7 @@ export default function CartDrawer() {
                         <button
                           onClick={() => updateQuantity(item.productId, item.size, item.quantity - 1)}
                           className="px-2 py-1 text-slate-500 hover:text-black transition-colors"
+                          aria-label="Decrease quantity"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
@@ -122,6 +124,7 @@ export default function CartDrawer() {
                         <button
                           onClick={() => updateQuantity(item.productId, item.size, item.quantity + 1)}
                           className="px-2 py-1 text-slate-500 hover:text-black transition-colors"
+                          aria-label="Increase quantity"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
@@ -131,6 +134,7 @@ export default function CartDrawer() {
                         onClick={() => removeFromCart(item.productId, item.size)}
                         className="text-slate-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50 cursor-pointer"
                         title="Remove item"
+                        aria-label="Remove item"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

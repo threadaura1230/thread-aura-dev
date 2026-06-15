@@ -40,7 +40,7 @@ export default async function ExploreSelection() {
                       {subCol.name}
                     </Link>
                   </h3>
-                  <p className="text-[#131b11]/80 text-[12px] md:text-[13px] leading-[1.8] max-w-[420px] font-medium">
+                  <p className="text-[#131b11] text-[12px] md:text-[13px] leading-[1.8] max-w-[420px] font-medium">
                     {subCol.description || `Handcrafted ${subCol.name} bangles. Lightweight, comfortable, and durable, they beautifully complement both ethnic and contemporary styles.`}
                   </p>
                 </div>

@@ -1,17 +1,19 @@
 "use client";
 
-import { Search, Heart, ShoppingBag, User, LogOut, ThumbsUp, Package, X, Tag, ChevronRight } from "lucide-react";
+import { Search, Heart, ShoppingBag, User, LogOut, ThumbsUp, Package, X, Tag, ChevronRight, Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import MobileMenu from "./MobileMenu";
 
 export default function Header() {
     const { toggleCart, cartCount } = useCart();
     const [user, setUser] = useState<{ id: string; name?: string; email: string; avatar?: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const router = useRouter();
@@ -143,18 +145,27 @@ export default function Header() {
     };
 
     return (
-        <header className="absolute top-0 left-0 right-0 z-50 px-8 py-6 flex items-center justify-between border-b border-black/5 md:border-transparent">
+        <header className="absolute top-0 left-0 right-0 z-50 px-6 md:px-8 py-6 flex items-center justify-between border-b border-black/5 md:border-transparent">
+            {/* Mobile Menu Toggle */}
+            <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="flex items-center justify-center md:hidden mr-3 text-slate-800 hover:text-black transition-colors focus:outline-none cursor-pointer"
+                aria-label="Open navigation menu"
+            >
+                <Menu className="w-6 h-6 stroke-[1.5]" />
+            </button>
+
             {/* Brand */}
-            <div className="flex-1">
-                <Link href="/" className="flex items-center gap-3 w-fit">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+            <div className="flex-1 flex items-center">
+                <Link href="/" className="flex items-center gap-2 sm:gap-3 w-fit">
+                    <div className="relative w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full overflow-hidden flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" className="w-full h-full">
                             <circle cx="44" cy="71" r="34" fill="none" stroke="#0f3a2a" strokeWidth="3.5" />
                             <circle cx="76" cy="71" r="34" fill="none" stroke="#d4af37" strokeWidth="3.5" />
                             <circle cx="60" cy="49" r="34" fill="none" stroke="#134a31" strokeWidth="3.5" />
                         </svg>
                     </div>
-                    <h1 className="font-serif text-[28px] font-medium tracking-wide text-[#0f3a2a] leading-none">
+                    <h1 className="font-serif text-[20px] sm:text-[24px] md:text-[28px] font-medium tracking-wide text-[#0f3a2a] leading-none">
                         Thread-aura
                     </h1>
                 </Link>
@@ -193,6 +204,7 @@ export default function Header() {
                                     setShowResults(false);
                                 }}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                                aria-label="Clear search"
                             >
                                 <X className="w-3.5 h-3.5" />
                             </button>
@@ -313,10 +325,14 @@ export default function Header() {
                         </div>
                     )}
                 </div>
-                <Link href="/liked" className="text-slate-800 hover:text-black transition-colors flex items-center">
+                <Link href="/liked" className="text-slate-800 hover:text-black transition-colors flex items-center" aria-label="Wishlist">
                     <Heart className="w-[18px] h-[18px] stroke-[1.5]" />
                 </Link>
-                <button onClick={toggleCart} className="relative text-slate-800 hover:text-black transition-colors cursor-pointer flex items-center justify-center">
+                <button 
+                    onClick={toggleCart} 
+                    className="relative text-slate-800 hover:text-black transition-colors cursor-pointer flex items-center justify-center"
+                    aria-label="Open Cart"
+                >
                     <ShoppingBag className="w-[18px] h-[18px] stroke-[1.5]" />
                     {cartCount > 0 && (
                         <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-[#0f3a2a] text-white text-[9px] font-bold rounded-full flex items-center justify-center font-sans">
@@ -334,6 +350,7 @@ export default function Header() {
                             <button
                                 onClick={() => setShowDropdown(!showDropdown)}
                                 className="flex items-center justify-center focus:outline-none transition-transform active:scale-95"
+                                aria-label="User profile settings"
                             >
                                 {user.avatar ? (
                                     <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#0f3a2a]/20">
@@ -403,12 +420,22 @@ export default function Header() {
                         <Link
                             href="/login"
                             className="text-slate-800 hover:text-black transition-colors block"
+                            aria-label="Account Login"
                         >
                             <User className="w-[18px] h-[18px] stroke-[1.5]" />
                         </Link>
                     )}
                 </div>
             </div>
+
+            {/* Mobile Menu Drawer */}
+            <MobileMenu
+                isOpen={mobileMenuOpen}
+                onClose={() => setMobileMenuOpen(false)}
+                user={user}
+                loading={loading}
+                onLogout={handleLogout}
+            />
         </header>
     );
 }
