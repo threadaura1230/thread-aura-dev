@@ -1,8 +1,46 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Contact() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, message })
+      });
+      if (res.ok) {
+        setSuccess(true);
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to send message. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section id="contact" className="w-full bg-[#0A1310] flex flex-col lg:flex-row min-h-[700px]">
       {/* Left Side: Image */}
@@ -31,13 +69,15 @@ export default function Contact() {
             Have a question or need assistance? Feel free to reach out to us. We are here to help you on your journey to bespoke craftsmanship.
           </p>
 
-          <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="relative">
               <input 
                 type="text" 
                 placeholder="First name *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
             <div className="relative">
@@ -46,6 +86,8 @@ export default function Contact() {
                 placeholder="Last name *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
               />
             </div>
             <div className="relative">
@@ -54,6 +96,8 @@ export default function Contact() {
                 placeholder="Email *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="relative">
@@ -61,14 +105,21 @@ export default function Contact() {
                 placeholder="Message"
                 rows={2}
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors resize-none"
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               ></textarea>
             </div>
 
+            {error && <p className="text-red-400 text-[13px]">{error}</p>}
+            {success && <p className="text-green-400 text-[13px]">Message sent successfully!</p>}
+
             <button 
               type="submit"
-              className="w-full py-4 mt-8 bg-[#FFFBE4] text-[#0A1310] text-[13px] font-medium tracking-wide hover:bg-[#f2ead3] transition-colors"
+              disabled={loading}
+              className="w-full py-4 mt-8 bg-[#FFFBE4] text-[#0A1310] text-[13px] font-medium tracking-wide hover:bg-[#f2ead3] transition-colors disabled:opacity-50"
             >
-              Submit
+              {loading ? "Sending..." : "Submit"}
             </button>
           </form>
         </div>
