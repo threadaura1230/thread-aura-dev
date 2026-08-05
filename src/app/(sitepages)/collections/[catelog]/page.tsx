@@ -1,4 +1,5 @@
 import CatalogHeader from "@/sitepages/components/catalog/CatalogHeader";
+import SubCollectionGrid from "@/sitepages/components/catalog/SubCollectionGrid";
 import FilterSidebar from "@/sitepages/components/catalog/FilterSidebar";
 import ProductCard from "@/sitepages/components/catalog/ProductCard";
 import dbConnect from "@/lib/db";
@@ -41,7 +42,9 @@ export default async function CatalogPage({
     
     const activeMaterial = resolvedSearchParams.material as string | undefined;
     const activeSubCollection = resolvedSearchParams.subCollection as string | undefined;
-    const activePrice = resolvedSearchParams.price as string | undefined;
+    const activeColor = resolvedSearchParams.color as string | undefined;
+    const activePriceMin = resolvedSearchParams.priceMin as string | undefined;
+    const activePriceMax = resolvedSearchParams.priceMax as string | undefined;
     
     await dbConnect();
     
@@ -67,22 +70,42 @@ export default async function CatalogPage({
         );
     }
     
-    // Fetch distinct active materials present in this collection's products
-    const distinctMaterials = (await Product.distinct("material", {
-        collection: collection._id,
-        isActive: true,
-    })).filter(Boolean) as string[];
+    // Fetch distinct active materials and colors present in this collection's products
+    const baseFilter = { collection: collection._id, isActive: true };
+    const distinctMaterials = (await Product.distinct("material", baseFilter)).filter(Boolean) as string[];
+    const distinctColors = (await Product.distinct("color", baseFilter)).filter(Boolean) as string[];
+
+    // Get max price for slider
+    const maxPriceResult = await Product.findOne(baseFilter).sort({ price: -1 }).select("price").lean() as { price?: number } | null;
+    const maxPrice = maxPriceResult?.price || 5000;
 
     // Find active subcollections belonging to this parent collection
     const dbSubCollections = await SubCollection.find({
         collection: collection._id,
         isActive: true,
-    }).select("_id name slug");
+    }).select("_id name slug description image");
+
+    // Get product counts per subcollection in a single aggregate query
+    const productCounts = await Product.aggregate([
+        { $match: { collection: collection._id, isActive: true } },
+        { $group: { _id: "$subCollection", count: { $sum: 1 } } },
+    ]);
+    const countMap = new Map(productCounts.map((pc: any) => [pc._id?.toString(), pc.count]));
 
     const subCollections = dbSubCollections.map((sub) => ({
         _id: sub._id.toString(),
         name: sub.name,
         slug: sub.slug,
+    }));
+
+    // Full subcollection data for the grid (includes image, description, count)
+    const subCollectionsForGrid = dbSubCollections.map((sub) => ({
+        _id: sub._id.toString(),
+        name: sub.name,
+        slug: sub.slug,
+        description: sub.description || "",
+        image: sub.image || "",
+        productCount: countMap.get(sub._id.toString()) || 0,
     }));
 
     // Build the query dynamically
@@ -91,6 +114,11 @@ export default async function CatalogPage({
     if (activeMaterial) {
         const materials = activeMaterial.split(",");
         query.material = { $in: materials };
+    }
+
+    if (activeColor) {
+        const colors = activeColor.split(",");
+        query.color = { $in: colors };
     }
 
     if (activeSubCollection) {
@@ -102,16 +130,11 @@ export default async function CatalogPage({
         query.subCollection = { $in: matchingSubCols.map(s => s._id) };
     }
 
-    if (activePrice) {
-        if (activePrice === "under-500") {
-            query.price = { $lt: 500 };
-        } else if (activePrice === "500-1000") {
-            query.price = { $gte: 500, $lte: 1000 };
-        } else if (activePrice === "1000-2000") {
-            query.price = { $gte: 1000, $lte: 2000 };
-        } else if (activePrice === "over-2000") {
-            query.price = { $gt: 2000 };
-        }
+    // Price range filtering
+    if (activePriceMin || activePriceMax) {
+        query.price = {};
+        if (activePriceMin) query.price.$gte = Number(activePriceMin);
+        if (activePriceMax) query.price.$lte = Number(activePriceMax);
     }
 
     // Retrieve products matching the query from MongoDB (populated with subCollection)
@@ -138,9 +161,16 @@ export default async function CatalogPage({
                 {/* Header - pass the actual DB collection name */}
                 <CatalogHeader categoryName={collection.name} />
 
+                {/* Subcollection browsing grid */}
+                <SubCollectionGrid
+                    subCollections={subCollectionsForGrid}
+                    categorySlug={categorySlug}
+                    categoryName={collection.name}
+                />
+
                 <div className="flex flex-col md:flex-row gap-8 lg:gap-12 relative">
                     {/* Sidebar */}
-                    <FilterSidebar materials={distinctMaterials} subCollections={subCollections} />
+                    <FilterSidebar materials={distinctMaterials} colors={distinctColors} subCollections={subCollections} maxPrice={maxPrice} />
 
                     {/* Product Grid */}
                     <div className="flex-1">

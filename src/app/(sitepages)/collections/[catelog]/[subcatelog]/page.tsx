@@ -43,7 +43,9 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
     const { catelog, subcatelog } = await params;
     const resolvedSearchParams = await searchParams;
     const activeMaterial = resolvedSearchParams.material as string | undefined;
-    const activePrice = resolvedSearchParams.price as string | undefined;
+    const activeColor = resolvedSearchParams.color as string | undefined;
+    const activePriceMin = resolvedSearchParams.priceMin as string | undefined;
+    const activePriceMax = resolvedSearchParams.priceMax as string | undefined;
     
     await dbConnect();
     
@@ -74,12 +76,18 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
         );
     }
     
-    // Fetch distinct active materials present specifically in this subcategory's products
-    const distinctMaterials = (await Product.distinct("material", {
+    // Fetch distinct active materials and colors present specifically in this subcategory's products
+    const subFilter = {
         collection: collection._id,
         subCollection: subCollection._id,
         isActive: true,
-    })).filter(Boolean) as string[];
+    };
+    const distinctMaterials = (await Product.distinct("material", subFilter)).filter(Boolean) as string[];
+    const distinctColors = (await Product.distinct("color", subFilter)).filter(Boolean) as string[];
+
+    // Get max price for slider
+    const maxPriceResult = await Product.findOne(subFilter).sort({ price: -1 }).select("price").lean() as { price?: number } | null;
+    const maxPrice = maxPriceResult?.price || 5000;
 
     // Build the query dynamically
     const query: any = { 
@@ -93,16 +101,16 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
         query.material = { $in: materials };
     }
 
-    if (activePrice) {
-        if (activePrice === "under-500") {
-            query.price = { $lt: 500 };
-        } else if (activePrice === "500-1000") {
-            query.price = { $gte: 500, $lte: 1000 };
-        } else if (activePrice === "1000-2000") {
-            query.price = { $gte: 1000, $lte: 2000 };
-        } else if (activePrice === "over-2000") {
-            query.price = { $gt: 2000 };
-        }
+    if (activeColor) {
+        const colors = activeColor.split(",");
+        query.color = { $in: colors };
+    }
+
+    // Price range filtering
+    if (activePriceMin || activePriceMax) {
+        query.price = {};
+        if (activePriceMin) query.price.$gte = Number(activePriceMin);
+        if (activePriceMax) query.price.$lte = Number(activePriceMax);
     }
 
     // Retrieve products belonging to this category and subcategory from MongoDB
@@ -144,7 +152,7 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
 
                 <div className="flex flex-col md:flex-row gap-8 lg:gap-12 relative">
                     {/* Sidebar */}
-                    <FilterSidebar materials={distinctMaterials} />
+                    <FilterSidebar materials={distinctMaterials} colors={distinctColors} maxPrice={maxPrice} />
 
                     {/* Product Grid */}
                     <div className="flex-1">

@@ -36,9 +36,10 @@ export default function Header() {
     const { toggleCart, cartCount } = useCart();
     const [user, setUser] = useState<{ id: string; name?: string; email: string; avatar?: string } | null>(null);
     const [loading, setLoading] = useState(true);
+    const [scrolled, setScrolled] = useState(false);
+    const [collections, setCollections] = useState<any[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const router = useRouter();
@@ -51,6 +52,8 @@ export default function Header() {
     const [searchLoading, setSearchLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+
+
 
     // Header only floats transparent over a hero on the home route — every
     // other route gets a solid header immediately, since there's no hero to
@@ -102,6 +105,18 @@ export default function Header() {
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // Fetch collections for Shop dropdown
+    useEffect(() => {
+        fetch("/api/manage-products/category")
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setCollections(data.collections);
+                }
+            })
+            .catch(err => console.error("Error fetching collections", err));
     }, []);
 
     useEffect(() => {
@@ -195,7 +210,7 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed inset-x-0 top-0 z-50 px-6 md:px-8 py-5 flex items-center justify-between transition-all duration-500 ${
+            className={`fixed inset-x-0 top-0 z-50 px-4 md:px-8 py-5 flex items-center justify-between transition-all duration-500 gap-4 ${
                 solid
                     ? "bg-[#f1efe7]/90 backdrop-blur-md border-b border-[#0f3a2a]/10 shadow-[0_2px_24px_rgba(15,58,42,0.05)]"
                     : "bg-transparent border-b border-transparent"
@@ -206,14 +221,14 @@ export default function Header() {
                 {/* Mobile Menu Toggle */}
                 <button
                     onClick={() => setMobileMenuOpen(true)}
-                    className="flex items-center justify-center md:hidden mr-3 text-[#151510] hover:text-[#0f3a2a] transition-colors focus:outline-none cursor-pointer"
+                    className="flex items-center justify-center lg:hidden mr-2 text-[#151510] hover:text-[#0f3a2a] transition-colors focus:outline-none cursor-pointer"
                     aria-label="Open navigation menu"
                 >
                     <Menu className="w-6 h-6 stroke-[1.5]" />
                 </button>
 
                 {/* Brand */}
-                <div className="flex-1 flex items-center">
+                <div className="flex-1 flex items-center justify-start min-w-0">
                     <Link href="/" className="flex items-center gap-2 sm:gap-3 w-fit">
                         <div className="relative w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full overflow-hidden flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" className="w-full h-full">
@@ -223,7 +238,7 @@ export default function Header() {
                             </svg>
                         </div>
                         <h1
-                            className="text-[20px] sm:text-[24px] md:text-[28px] font-medium tracking-wide text-[#0f3a2a] leading-none"
+                            className="text-[20px] sm:text-[24px] md:text-[28px] font-medium tracking-wide text-[#0f3a2a] leading-none shrink-0"
                             style={{ fontFamily: "var(--font-display)" }}
                         >
                             Thread-aura
@@ -232,19 +247,34 @@ export default function Header() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="hidden md:flex flex-initial justify-center space-x-6 lg:space-x-8 text-[13px] font-medium whitespace-nowrap">
+                <nav className="hidden lg:flex flex-none items-center justify-center space-x-5 xl:space-x-8 text-[13px] font-medium whitespace-nowrap">
                     <Link href="/" className={navLinkClass(isHome)}>
                         Home
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isHome ? "scale-x-100" : "scale-x-0"}`} />
                     </Link>
-                    <Link href="#collections" onClick={(e) => handleScroll(e, "collections")} className={`${navLinkClass(false)} cursor-pointer group`}>
-                        Collections
-                        <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </Link>
-                    <Link href="#shop-all" onClick={(e) => handleScroll(e, "shop-all")} className={`${navLinkClass(false)} cursor-pointer group`}>
-                        Shop All
-                        <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </Link>
+                    
+                    {/* Collections Dropdown */}
+                    <div className="relative group flex items-center h-full py-2">
+                        <Link href="#collections" onClick={(e) => handleScroll(e, "collections")} className={`${navLinkClass(false)} flex items-center gap-1 cursor-pointer group-hover:text-[#151510]`}>
+                            Collections
+                            <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+                        </Link>
+                        
+                        {/* Dropdown Menu */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div className="w-48 bg-white border border-[#0f3a2a]/10 shadow-[0_2px_24px_rgba(15,58,42,0.05)] rounded-xl overflow-hidden py-2 flex flex-col">
+                                <Link href="/collections/all" className="px-4 py-2.5 hover:bg-[#f1efe7]/50 text-[#0f3a2a] font-semibold text-[13px] transition-colors border-b border-[#0f3a2a]/5">
+                                    Shop All
+                                </Link>
+                                {collections.map((c) => (
+                                    <Link key={c._id} href={`/collections/${c.slug}`} className="px-4 py-2 hover:bg-[#f1efe7]/50 text-[#151510]/80 hover:text-[#151510] text-[13px] transition-colors">
+                                        {c.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    
                     <Link href="/orders" className={`${navLinkClass(isOrders)} group`}>
                         My Orders
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isOrders ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
@@ -264,20 +294,19 @@ export default function Header() {
                 </nav>
 
                 {/* Actions */}
-                <div className="flex-1 flex items-center justify-end space-x-5 lg:space-x-6">
+                <div className="flex-1 flex items-center justify-end space-x-4 lg:space-x-6 min-w-0">
                     <div className="relative" ref={searchRef}>
                         <div className="relative group hidden sm:block">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#151510]/45 group-focus-within:text-[#0f3a2a] transition-colors" />
                             <input
                                 type="text"
-                                placeholder="Search bangles, materials, prices..."
+                                placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onFocus={() => {
                                     if (searchQuery.trim()) setShowResults(true);
                                 }}
-                                className="pl-9 pr-10 py-2 bg-white/70 border border-[#0f3a2a]/10 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-[#b13d33] focus:border-[#b13d33]/40 w-32 lg:w-64 transition-all placeholder:text-[#151510]/40"
-                                style={{ fontFamily: "var(--font-body)" }}
+                                className="pl-9 pr-10 py-2 bg-[#e8e6df]/80 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-[#0f3a2a] w-32 lg:w-64 transition-all placeholder:text-slate-500 font-sans"
                             />
                             {searchQuery && (
                                 <button
@@ -286,13 +315,13 @@ export default function Header() {
                                         setSearchResults(null);
                                         setShowResults(false);
                                     }}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#151510]/35 hover:text-[#151510]/70 transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
                                     aria-label="Clear search"
                                 >
                                     <X className="w-3.5 h-3.5" />
                                 </button>
                             )}
-                        </div>
+                    </div>
 
                         {/* Search Suggestions Overlay */}
                         {showResults && (
