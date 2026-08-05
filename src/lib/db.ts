@@ -7,6 +7,7 @@ import '@/models/products/collections';
 import '@/models/products/subcollection';
 import '@/models/products/products';
 import '@/models/Order';
+import '@/models/Review';
 
 
 function getMongoUri(): string {

@@ -15,6 +15,7 @@ import {
   Layers,
   FolderTree,
   Box,
+  Star,
 } from "lucide-react";
 
 interface AdminMobileMenuProps {
@@ -50,6 +51,11 @@ export default function AdminMobileMenu({
       name: "Contacts",
       icon: Mail,
       path: `/admin/${secret}/contact`,
+    },
+    {
+      name: "Reviews",
+      icon: Star,
+      path: `/admin/${secret}/reviews`,
     },
   ];
 

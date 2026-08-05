@@ -237,26 +237,30 @@ export default function Header() {
                         Home
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isHome ? "scale-x-100" : "scale-x-0"}`} />
                     </Link>
-                    <a href="#collections" onClick={(e) => handleScroll(e, "collections")} className={`${navLinkClass(false)} cursor-pointer group`}>
+                    <Link href="#collections" onClick={(e) => handleScroll(e, "collections")} className={`${navLinkClass(false)} cursor-pointer group`}>
                         Collections
                         <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </a>
-                    <a href="#shop-all" onClick={(e) => handleScroll(e, "shop-all")} className={`${navLinkClass(false)} cursor-pointer group`}>
+                    </Link>
+                    <Link href="#shop-all" onClick={(e) => handleScroll(e, "shop-all")} className={`${navLinkClass(false)} cursor-pointer group`}>
                         Shop All
                         <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </a>
+                    </Link>
                     <Link href="/orders" className={`${navLinkClass(isOrders)} group`}>
                         My Orders
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isOrders ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
                     </Link>
-                    <a href="#about" onClick={(e) => handleScroll(e, "about")} className={`${navLinkClass(false)} cursor-pointer group`}>
+                    <Link href="#about" onClick={(e) => handleScroll(e, "about")} className={`${navLinkClass(false)} cursor-pointer group`}>
                         About
                         <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </a>
-                    <a href="#contact" onClick={(e) => handleScroll(e, "contact")} className={`${navLinkClass(false)} cursor-pointer group`}>
+                    </Link>
+                    <Link href="/reviews" className={`${navLinkClass(false)} cursor-pointer group`}>
+                        Reviews
+                        <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+                    </Link>
+                    <Link href="#contact" onClick={(e) => handleScroll(e, "contact")} className={`${navLinkClass(false)} cursor-pointer group`}>
                         Contact
                         <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                    </a>
+                    </Link>
                 </nav>
 
                 {/* Actions */}
@@ -401,66 +405,88 @@ export default function Header() {
                         )}
                     </div>
 
-                    {/* Wishlist — same destination the account dropdown calls "My Wishlist" */}
-                    <Link href="/wishlist" className="text-[#151510] hover:text-[#b13d33] transition-colors flex items-center" aria-label="Wishlist">
-                        <Heart className="w-[18px] h-[18px] stroke-[1.5]" />
-                    </Link>
-
-                    <button
-                        onClick={toggleCart}
-                        className="relative text-[#151510] hover:text-[#b13d33] transition-colors cursor-pointer flex items-center justify-center"
-                        aria-label="Open Cart"
-                    >
-                        <ShoppingBag className="w-[18px] h-[18px] stroke-[1.5]" />
-                        {cartCount > 0 && (
-                            <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-[18px] h-[18px] rounded-full bg-[#b13d33] text-white text-[9px] font-bold leading-none">
-                                {cartCount}
-                            </span>
-                        )}
-                    </button>
-
                     {/* User Auth Section */}
                     <div className="relative" ref={dropdownRef}>
                         {loading ? (
                             <div className="w-[18px] h-[18px] animate-pulse rounded-full bg-[#0f3a2a]/10" />
-                        ) : user ? (
+                        ) : (
                             <>
                                 <button
                                     onClick={() => setShowDropdown(!showDropdown)}
-                                    className="flex items-center justify-center focus:outline-none transition-transform active:scale-95"
+                                    className="flex items-center justify-center focus:outline-none transition-transform active:scale-95 text-[#151510] hover:text-[#b13d33]"
                                     aria-label="User profile settings"
                                 >
-                                    {user.avatar ? (
-                                        <div className="relative w-7 h-7 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
-                                            <Image
-                                                src={user.avatar}
-                                                alt={user.name || user.email}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
+                                    {user ? (
+                                        user.avatar ? (
+                                            <div className="relative w-7 h-7 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
+                                                <Image
+                                                    src={user.avatar}
+                                                    alt={user.name || user.email}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="w-7 h-7 rounded-full bg-[#0f3a2a] text-white flex items-center justify-center text-xs font-bold ring-1 ring-[#d4af37]/50"
+                                                style={{ fontFamily: "var(--font-display)" }}
+                                            >
+                                                {(user.name || user.email)[0].toUpperCase()}
+                                            </div>
+                                        )
                                     ) : (
-                                        <div
-                                            className="w-7 h-7 rounded-full bg-[#0f3a2a] text-white flex items-center justify-center text-xs font-bold ring-1 ring-[#d4af37]/50"
-                                            style={{ fontFamily: "var(--font-display)" }}
-                                        >
-                                            {(user.name || user.email)[0].toUpperCase()}
-                                        </div>
+                                        <User className="w-[18px] h-[18px] stroke-[1.5]" />
                                     )}
                                 </button>
 
                                 {showDropdown && (
                                     <div className="absolute right-0 mt-3 w-56 rounded-xl bg-white border border-[#0f3a2a]/[0.08] p-2 shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-200" style={{ fontFamily: "var(--font-body)" }}>
-                                        <div className="px-3 py-2.5">
-                                            <p className="text-[10px] uppercase tracking-[0.15em] text-[#151510]/40" style={{ fontFamily: "var(--font-label)" }}>Signed in as</p>
-                                            <p className="text-sm font-semibold text-[#0f3a2a] truncate mt-1">
-                                                {user.name || "User"}
-                                            </p>
-                                            <p className="text-xs text-[#151510]/50 truncate mt-0.5">
-                                                {user.email}
-                                            </p>
-                                        </div>
-                                        <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
+                                        {user ? (
+                                            <>
+                                                <div className="px-3 py-2.5">
+                                                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#151510]/40" style={{ fontFamily: "var(--font-label)" }}>Signed in as</p>
+                                                    <p className="text-sm font-semibold text-[#0f3a2a] truncate mt-1">
+                                                        {user.name || "User"}
+                                                    </p>
+                                                    <p className="text-xs text-[#151510]/50 truncate mt-0.5">
+                                                        {user.email}
+                                                    </p>
+                                                </div>
+                                                <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="px-3 py-2">
+                                                    <Link
+                                                        href="/login"
+                                                        className="w-full flex items-center justify-center px-3 py-2 text-sm bg-[#0f3a2a] text-white rounded-lg hover:bg-[#0f3a2a]/90 transition-colors text-center font-medium"
+                                                        onClick={() => setShowDropdown(false)}
+                                                    >
+                                                        Sign In / Register
+                                                    </Link>
+                                                </div>
+                                                <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
+                                            </>
+                                        )}
+                                        
+                                        <button
+                                            onClick={() => {
+                                                toggleCart();
+                                                setShowDropdown(false);
+                                            }}
+                                            className="w-full flex items-center justify-between px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <ShoppingBag className="w-4 h-4" />
+                                                <span>Shopping Cart</span>
+                                            </div>
+                                            {cartCount > 0 && (
+                                                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#b13d33] text-white text-[10px] font-bold">
+                                                    {cartCount}
+                                                </span>
+                                            )}
+                                        </button>
+
                                         <Link
                                             href="/wishlist"
                                             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
@@ -469,41 +495,38 @@ export default function Header() {
                                             <Heart className="w-4 h-4" />
                                             <span>My Wishlist</span>
                                         </Link>
-                                        <Link
-                                            href="/liked"
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
-                                            onClick={() => setShowDropdown(false)}
-                                        >
-                                            <ThumbsUp className="w-4 h-4" />
-                                            <span>Liked Products</span>
-                                        </Link>
-                                        <Link
-                                            href="/orders"
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
-                                            onClick={() => setShowDropdown(false)}
-                                        >
-                                            <Package className="w-4 h-4" />
-                                            <span>Order History</span>
-                                        </Link>
-                                        <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
-                                        <button
-                                            onClick={handleLogout}
-                                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left font-medium"
-                                        >
-                                            <LogOut className="w-4 h-4" />
-                                            <span>Sign out</span>
-                                        </button>
+
+                                        {user && (
+                                            <>
+                                                <Link
+                                                    href="/liked"
+                                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
+                                                    onClick={() => setShowDropdown(false)}
+                                                >
+                                                    <ThumbsUp className="w-4 h-4" />
+                                                    <span>Liked Products</span>
+                                                </Link>
+                                                <Link
+                                                    href="/orders"
+                                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
+                                                    onClick={() => setShowDropdown(false)}
+                                                >
+                                                    <Package className="w-4 h-4" />
+                                                    <span>Order History</span>
+                                                </Link>
+                                                <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left font-medium"
+                                                >
+                                                    <LogOut className="w-4 h-4" />
+                                                    <span>Sign out</span>
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
                                 )}
                             </>
-                        ) : (
-                            <Link
-                                href="/login"
-                                className="text-[#151510] hover:text-[#b13d33] transition-colors block"
-                                aria-label="Account Login"
-                            >
-                                <User className="w-[18px] h-[18px] stroke-[1.5]" />
-                            </Link>
                         )}
                     </div>
                 </div>

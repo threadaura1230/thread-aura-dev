@@ -14,6 +14,7 @@ import {
   Layers,
   FolderTree,
   Box,
+  Star,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -49,6 +50,11 @@ export default function AdminSidebar({
       name: "Contacts",
       icon: Mail,
       path: `/admin/${secret}/contact`,
+    },
+    {
+      name: "Reviews",
+      icon: Star,
+      path: `/admin/${secret}/reviews`,
     },
   ];
 
