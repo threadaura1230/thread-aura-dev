@@ -83,52 +83,93 @@ export default function Collection() {
                 {collections.map((col, idx) => {
                     const style = cardStyles[idx] || cardStyles[1];
                     return (
-                        <div 
-                            key={col._id} 
-                            className={`relative group rounded-2xl overflow-hidden w-full ${style.aspect} transition-all duration-[1200ms] ease-out ${style.delay} ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-24 scale-90'}`}
-                        >
-                            {/* Background image or fallback */}
-                            <div className="absolute inset-0 bg-[#e3ded9] transition-transform duration-700 group-hover:scale-105">
-                                {col.image ? (
-                                    <img 
-                                        src={col.image} 
-                                        alt={col.name} 
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium bg-[#d9dcd6]">
-                                        {col.name}
-                                    </div>
-                                )}
-                            </div>
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
-
-                            <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10">
-                                {style.isTall && (
-                                    <span className="inline-block px-3 py-1 bg-[#0F3A2A] text-white text-[10px] font-bold uppercase tracking-wider rounded-[3px] mb-4">
-                                        Featured Collection
-                                    </span>
-                                )}
-                                <h3 className="font-serif text-[22px] md:text-3xl text-white mb-3">{col.name}</h3>
-                                {style.isTall && col.description && (
-                                    <p className="text-white/90 text-[13px] leading-relaxed max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-64 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-6">
-                                        {col.description}
-                                    </p>
-                                )}
-                                {!style.isTall && col.description && (
-                                    <p className="text-white/90 text-[13px] max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-32 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-4">
-                                        {col.description.slice(0, 50)}...
-                                    </p>
-                                )}
-                                <Link href={`/collections/${col.slug}`} className="inline-block px-6 py-2.5 bg-white text-slate-900 text-[13px] font-medium rounded-[4px] hover:bg-slate-100 transition-colors">
-                                    Explore
-                                </Link>
-                            </div>
-                        </div>
+                        <CollectionCard
+                            key={col._id}
+                            col={col}
+                            style={style}
+                            isVisible={isVisible}
+                        />
                     );
                 })}
             </div>
         </section>
+    );
+}
+
+function CollectionCard({ col, style, isVisible }: { col: any; style: any; isVisible: boolean }) {
+    const images = col.images && col.images.length > 0 ? col.images : (col.image ? [col.image] : []);
+    const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+    useEffect(() => {
+        if (images.length <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentImageIdx((prev) => (prev + 1) % images.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [images]);
+
+    return (
+        <div 
+            className={`relative group rounded-2xl overflow-hidden w-full ${style.aspect} transition-all duration-[1200ms] ease-out ${style.delay} ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-24 scale-90'}`}
+        >
+            {/* Background image or fallback */}
+            <div className="absolute inset-0 bg-[#e3ded9] transition-transform duration-700 group-hover:scale-105">
+                {images.length > 0 ? (
+                    images.map((imgUrl: string, imgIdx: number) => (
+                        <img 
+                            key={imgUrl}
+                            src={imgUrl} 
+                            alt={`${col.name} ${imgIdx}`} 
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                                imgIdx === currentImageIdx ? "opacity-100" : "opacity-0"
+                            }`}
+                        />
+                    ))
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-400 font-medium bg-[#d9dcd6]">
+                        {col.name}
+                    </div>
+                )}
+            </div>
+            
+            {/* Slider Dots Indicator */}
+            {images.length > 1 && (
+                <div className="absolute top-4 left-4 flex gap-1.5 z-20">
+                    {images.map((_: any, dotIdx: number) => (
+                        <span 
+                            key={dotIdx} 
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                                dotIdx === currentImageIdx ? "bg-white w-3" : "bg-white/40"
+                            }`}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+
+            <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10">
+                {style.isTall && (
+                    <span className="inline-block px-3 py-1 bg-[#0F3A2A] text-white text-[10px] font-bold uppercase tracking-wider rounded-[3px] mb-4">
+                        Featured Collection
+                    </span>
+                )}
+                <h3 className="font-serif text-[22px] md:text-3xl text-white mb-3">{col.name}</h3>
+                {style.isTall && col.description && (
+                    <p className="text-white/90 text-[13px] leading-relaxed max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-64 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-6">
+                        {col.description}
+                    </p>
+                )}
+                {!style.isTall && col.description && (
+                    <p className="text-white/90 text-[13px] max-h-0 opacity-0 translate-y-4 overflow-hidden transition-all duration-500 ease-out group-hover:max-h-32 group-hover:opacity-100 group-hover:translate-y-0 group-hover:mb-4">
+                        {col.description.slice(0, 50)}...
+                    </p>
+                )}
+                <Link href={`/collections/${col.slug}`} className="inline-block px-6 py-2.5 bg-white text-slate-900 text-[13px] font-medium rounded-[4px] hover:bg-slate-100 transition-colors">
+                    Explore
+                </Link>
+            </div>
+        </div>
     );
 }
