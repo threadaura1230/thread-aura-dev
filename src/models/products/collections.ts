@@ -20,6 +20,10 @@ const CollectionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    images: {
+      type: [String],
+      default: [],
+    },
     isActive: {
       type: Boolean,
       default: true,

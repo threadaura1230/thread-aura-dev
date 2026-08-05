@@ -159,7 +159,11 @@ export default async function CatalogPage({
         <div className="bg-[#F1EFE7] min-h-screen py-24 px-6 md:px-8 lg:px-12">
             <div className="max-w-[1400px] mx-auto">
                 {/* Header - pass the actual DB collection name */}
-                <CatalogHeader categoryName={collection.name} />
+                <CatalogHeader 
+                    categoryName={collection.name} 
+                    description={collection.description}
+                    images={collection.images || (collection.image ? [collection.image] : [])}
+                />
 
                 {/* Subcollection browsing grid */}
                 <SubCollectionGrid

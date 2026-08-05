@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, description, image, isActive } = await request.json();
+    const { name, description, image, images, isActive } = await request.json();
     if (!name) {
       return NextResponse.json({ success: false, error: "Name is required" }, { status: 400 });
     }
@@ -55,7 +55,8 @@ export async function POST(request: Request) {
       name,
       slug,
       description: description || "",
-      image: image || "",
+      image: image || (images && images.length > 0 ? images[0] : ""),
+      images: images || [],
       isActive: isActive !== undefined ? isActive : true,
     });
 

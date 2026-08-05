@@ -9,6 +9,7 @@ interface Collection {
   slug: string;
   description: string;
   image: string;
+  images?: string[];
   isActive: boolean;
 }
 
@@ -22,7 +23,7 @@ export default function CollectionsManager() {
   
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [isActive, setIsActive] = useState(true);
   
   const [uploading, setUploading] = useState(false);
@@ -51,7 +52,7 @@ export default function CollectionsManager() {
     setEditingCollection(null);
     setName("");
     setDescription("");
-    setImage("");
+    setImages([]);
     setIsActive(true);
     setError(null);
     setSuccess(null);
@@ -62,7 +63,7 @@ export default function CollectionsManager() {
     setEditingCollection(col);
     setName(col.name);
     setDescription(col.description);
-    setImage(col.image);
+    setImages(col.images || (col.image ? [col.image] : []));
     setIsActive(col.isActive);
     setError(null);
     setSuccess(null);
@@ -70,33 +71,45 @@ export default function CollectionsManager() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
     setUploading(true);
     setError(null);
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("subfolder", "collections");
+    const uploadedUrls: string[] = [];
 
     try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setImage(data.imageUrl);
-      } else {
-        setError(data.error || "Failed to upload image");
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append("file", files[i]);
+        formData.append("subfolder", "collections");
+
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.success) {
+          uploadedUrls.push(data.imageUrl);
+        } else {
+          setError(data.error || "Failed to upload one of the images");
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        setImages((prev) => [...prev, ...uploadedUrls]);
       }
     } catch (err) {
       console.error(err);
-      setError("Network error uploading image");
+      setError("Network error uploading images");
     } finally {
       setUploading(false);
     }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== indexToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,7 +122,7 @@ export default function CollectionsManager() {
       return;
     }
 
-    const payload = { name, description, image, isActive };
+    const payload = { name, description, image: images[0] || "", images, isActive };
     const url = editingCollection 
       ? `/api/manage-products/category/${editingCollection._id}` 
       : "/api/manage-products/category";
@@ -212,13 +225,20 @@ export default function CollectionsManager() {
                     </span>
                   )}
                   {/* Status badge */}
-                  <span className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                    col.isActive 
-                      ? "bg-[#073623]/10 text-[#073623] border border-[#073623]/20" 
-                      : "bg-red-50 text-red-600 border border-red-200"
-                  }`}>
-                    {col.isActive ? "Active" : "Inactive"}
-                  </span>
+                  <div className="absolute top-3 right-3 flex gap-1.5 items-center">
+                    {col.images && col.images.length > 0 && (
+                      <span className="bg-white/80 text-slate-800 text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-[2px] border border-black/5 backdrop-blur-[2px]">
+                        {col.images.length} {col.images.length === 1 ? "Image" : "Images"}
+                      </span>
+                    )}
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                      col.isActive 
+                        ? "bg-[#073623]/10 text-[#073623] border border-[#073623]/20" 
+                        : "bg-red-50 text-red-600 border border-red-200"
+                    }`}>
+                      {col.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Info */}
@@ -308,43 +328,37 @@ export default function CollectionsManager() {
               {/* Image Upload */}
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  Cover Image
+                  Collection Images
                 </label>
-                <div className="flex gap-4 items-center">
-                  <div className="h-16 w-16 bg-white border border-black/[0.08] rounded-xl flex items-center justify-center overflow-hidden relative">
-                    {image ? (
-                      <img src={image} alt="Preview" className="h-full w-full object-cover" />
-                    ) : (
-                      <Upload className="h-5 w-5 text-slate-300" />
-                    )}
-                  </div>
-                  <div className="flex-1">
+                <div className="grid grid-cols-4 gap-3">
+                  {images.map((imgUrl, idx) => (
+                    <div key={idx} className="relative aspect-square rounded-xl border border-black/[0.08] bg-white overflow-hidden group">
+                      <img src={imgUrl} alt={`Collection ${idx}`} className="h-full w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(idx)}
+                        className="absolute top-1 right-1 p-0.5 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors opacity-0 group-hover:opacity-100 shadow-sm"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {/* Upload box */}
+                  <label className="relative aspect-square rounded-xl border border-dashed border-black/[0.12] hover:border-black/[0.24] bg-white/50 hover:bg-white flex flex-col items-center justify-center cursor-pointer transition-all">
                     <input
                       type="file"
                       accept="image/*"
-                      id="collection-image-file"
+                      multiple
                       onChange={handleImageUpload}
-                      className="hidden"
                       disabled={uploading}
+                      className="hidden"
                     />
-                    <label
-                      htmlFor="collection-image-file"
-                      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-black/[0.08] bg-white hover:bg-slate-50 text-[11px] font-semibold text-slate-700 cursor-pointer transition-all ${
-                        uploading ? "opacity-50 pointer-events-none" : ""
-                      }`}
-                    >
-                      {uploading ? "Uploading..." : "Upload Image"}
-                    </label>
-                    {image && (
-                      <button
-                        type="button"
-                        onClick={() => setImage("")}
-                        className="ml-3 text-[11px] text-red-600 hover:underline"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
+                    <Upload className="h-5 w-5 text-slate-400" />
+                    <span className="text-[9px] font-semibold text-slate-400 uppercase mt-1">
+                      {uploading ? "Uploading" : "Add Image"}
+                    </span>
+                  </label>
                 </div>
               </div>
 

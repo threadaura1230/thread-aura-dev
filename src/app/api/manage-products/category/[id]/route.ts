@@ -26,7 +26,7 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const { name, description, image, isActive } = await request.json();
+    const { name, description, image, images, isActive } = await request.json();
 
     await dbConnect();
     const collection = await Collection.findById(id);
@@ -50,7 +50,12 @@ export async function PUT(
     }
 
     if (description !== undefined) collection.description = description;
-    if (image !== undefined) collection.image = image;
+    if (images !== undefined) {
+      collection.images = images;
+      collection.image = images[0] || "";
+    } else if (image !== undefined) {
+      collection.image = image;
+    }
     if (isActive !== undefined) collection.isActive = isActive;
 
     await collection.save();
