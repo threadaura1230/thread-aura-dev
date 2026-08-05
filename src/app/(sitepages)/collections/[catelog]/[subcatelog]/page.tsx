@@ -6,6 +6,7 @@ import Collection from "@/models/products/collections";
 import SubCollection from "@/models/products/subcollection";
 import Product from "@/models/products/products";
 import Link from "next/link";
+import { constructMetadata } from "@/lib/seo";
 
 interface PageProps {
     params: Promise<{
@@ -14,6 +15,29 @@ interface PageProps {
     }>;
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
+
+export async function generateMetadata({ params }: { params: Promise<{ catelog: string; subcatelog: string }> }) {
+  const { catelog, subcatelog } = await params;
+  await dbConnect();
+  const collection = await Collection.findOne({ slug: catelog, isActive: true });
+  const subCollection = collection 
+    ? await SubCollection.findOne({ slug: subcatelog, collection: collection._id, isActive: true })
+    : null;
+
+  if (!collection || !subCollection) {
+    return constructMetadata({
+      title: "Sub-Collection Not Found",
+      description: "This sub-collection could not be found.",
+    });
+  }
+
+  return constructMetadata({
+    title: `${subCollection.name} - ${collection.name}`,
+    description: subCollection.description || `Explore ${subCollection.name} from the ${collection.name} collection. Handcrafted luxury bangles.`,
+    image: subCollection.image,
+  });
+}
+
 
 export default async function SubcatalogPage({ params, searchParams }: PageProps) {
     const { catelog, subcatelog } = await params;

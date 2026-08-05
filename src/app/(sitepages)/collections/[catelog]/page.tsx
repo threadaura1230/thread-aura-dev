@@ -5,6 +5,27 @@ import dbConnect from "@/lib/db";
 import Collection from "@/models/products/collections";
 import SubCollection from "@/models/products/subcollection";
 import Product from "@/models/products/products";
+import { constructMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ catelog: string }> }) {
+  const { catelog } = await params;
+  await dbConnect();
+  const collection = await Collection.findOne({ slug: catelog, isActive: true });
+  
+  if (!collection) {
+    return constructMetadata({
+      title: "Collection Not Found",
+      description: "This bangle collection could not be found.",
+    });
+  }
+
+  return constructMetadata({
+    title: `${collection.name} Collection`,
+    description: collection.description || `Browse artisanal, hand-woven luxury bangles from the ${collection.name} collection.`,
+    image: collection.image,
+  });
+}
+
 
 export default async function CatalogPage({ 
     params,

@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/sitepages/components/layout/SmoothScroll";
 import CartProviderWrapper from "@/context/CartProviderWrapper";
+import { constructMetadata } from "@/lib/seo";
 
 const inter = Inter({
     subsets: ["latin"],
@@ -14,10 +14,8 @@ const playfair = Playfair_Display({
     variable: "--font-playfair",
 });
 
-export const metadata: Metadata = {
-    title: "Thread-aura",
-    description: "Artisanal, hand-woven luxury bangles.",
-};
+export const metadata = constructMetadata();
+
 
 export default function RootLayout({
     children,

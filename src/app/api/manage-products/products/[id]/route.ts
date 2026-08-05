@@ -36,7 +36,7 @@ export async function PUT(
     }
 
     // Verify parent relationships if changed
-    if (body.collection && body.collection !== product.collection.toString()) {
+    if (body.collection && (!product.collection || body.collection !== product.collection.toString())) {
       const colExists = await Collection.findById(body.collection);
       if (!colExists) {
         return NextResponse.json({ success: false, error: "Collection not found" }, { status: 400 });
@@ -44,7 +44,7 @@ export async function PUT(
       product.collection = body.collection;
     }
 
-    if (body.subCollection && body.subCollection !== product.subCollection.toString()) {
+    if (body.subCollection && (!product.subCollection || body.subCollection.toString() !== body.subCollection)) {
       const subColExists = await SubCollection.findById(body.subCollection);
       if (!subColExists) {
         return NextResponse.json({ success: false, error: "Sub-Collection not found" }, { status: 400 });

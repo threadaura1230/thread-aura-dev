@@ -6,6 +6,7 @@ import Product from "@/models/products/products";
 import Collection from "@/models/products/collections";
 import SubCollection from "@/models/products/subcollection";
 import Link from "next/link";
+import { constructMetadata } from "@/lib/seo";
 
 interface ProductPageProps {
     params: Promise<{
@@ -14,6 +15,28 @@ interface ProductPageProps {
         slug: string;
     }>;
 }
+
+export async function generateMetadata({ params }: ProductPageProps) {
+  const { slug } = await params;
+  await dbConnect();
+  const product = await Product.findOne({ slug, isActive: true });
+
+  if (!product) {
+    return constructMetadata({
+      title: "Product Not Found",
+      description: "This bangle could not be found.",
+    });
+  }
+
+  const defaultImg = product.images && product.images.length > 0 ? product.images[0] : undefined;
+
+  return constructMetadata({
+    title: product.name,
+    description: product.description || `Buy ${product.name} handcrafted luxury bangle online.`,
+    image: defaultImg,
+  });
+}
+
 
 export default async function ProductDetailPage({ params }: ProductPageProps) {
     const { catelog, subcatelog, slug } = await params;
