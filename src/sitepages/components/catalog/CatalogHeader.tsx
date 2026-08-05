@@ -1,31 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, SlidersHorizontal } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface CatalogHeaderProps {
     categoryName: string;
     description?: string;
     images?: string[];
-    subCollections?: { _id: string; name: string; slug: string }[];
+
 }
 
 export default function CatalogHeader({ 
     categoryName, 
     description, 
     images = [], 
-    subCollections = [] 
+
 }: CatalogHeaderProps) {
     const displayDesc = description || `Explore our handcrafted collection of ${categoryName.replace(/-/g, ' ')}. Each piece is meticulously designed with the finest threads and materials.`;
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
 
-    const activeSubCollection = searchParams.get("subCollection") || "";
 
     const slideImages = images.length > 0 ? images : [];
 
@@ -59,54 +54,6 @@ export default function CatalogHeader({
                         </p>
                     </div>
 
-                    {/* Mobile Filter Toggle & Desktop Sort */}
-                    <div className="flex flex-wrap items-center gap-4 pt-2">
-                        <button className="md:hidden flex items-center gap-2 text-[13px] font-semibold text-slate-800 border border-slate-300 rounded px-4 py-2 bg-white">
-                            <SlidersHorizontal className="w-4 h-4" />
-                            Filters
-                        </button>
-                        
-                        {/* Subcategory dropdown filter */}
-                        {subCollections.length > 0 && (
-                            <div className="flex items-center gap-3">
-                                <label htmlFor="subcat-select" className="text-[12px] text-slate-500 font-medium uppercase tracking-wider hidden sm:block">Subcat</label>
-                                <select 
-                                    id="subcat-select"
-                                    value={activeSubCollection}
-                                    onChange={(e) => {
-                                        const params = new URLSearchParams(searchParams.toString());
-                                        if (e.target.value) {
-                                            params.set("subCollection", e.target.value);
-                                        } else {
-                                            params.delete("subCollection");
-                                        }
-                                        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-                                    }}
-                                    className="text-[13px] bg-white border border-slate-300 text-slate-800 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
-                                >
-                                    <option value="">All Subcategories</option>
-                                    {subCollections.map((sub) => (
-                                        <option key={sub._id} value={sub.slug}>
-                                            {sub.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        )}
-
-                        <div className="flex items-center gap-3">
-                            <label htmlFor="sort" className="text-[12px] text-slate-500 font-medium uppercase tracking-wider hidden sm:block">Sort By</label>
-                            <select 
-                                id="sort" 
-                                className="text-[13px] bg-white border border-slate-300 text-slate-800 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
-                            >
-                                <option value="featured">Featured</option>
-                                <option value="newest">Newest Arrivals</option>
-                                <option value="price-asc">Price: Low to High</option>
-                                <option value="price-desc">Price: High to Low</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Right Side: Auto-sliding Images Box */}
