@@ -163,6 +163,7 @@ export default async function CatalogPage({
                     categoryName={collection.name} 
                     description={collection.description}
                     images={collection.images || (collection.image ? [collection.image] : [])}
+                    subCollections={subCollections}
                 />
 
                 {/* Subcollection browsing grid */}
