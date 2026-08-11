@@ -74,21 +74,15 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         id: dbProduct._id.toString(),
         name: dbProduct.name,
         price: dbProduct.price,
-        material: dbProduct.material || "100% Premium Thread & Zari Thread",
-        description: dbProduct.description || "Meticulously hand-wrapped by master weavers, this bangle features custom metallic gold zari thread interwoven with premium threads. Built over an ultra-lightweight, hypoallergenic core designed for unmatched all-day comfort.",
-        sizes: (dbProduct.sizes as string[]) || ["2.4", "2.6", "2.8"],
+        material: dbProduct.material || "",
+        description: dbProduct.description || "",
+        sizes: (dbProduct.sizes as string[]) || [],
         bgColor: dbProduct.bgColor || "#1f332a",
         images: (dbProduct.images as string[]) || [],
         slug: dbProduct.slug,
         categorySlug: catelog,
         subCollectionSlug: subcatelog,
-        details: dbProduct.details && dbProduct.details.length > 0 
-            ? (dbProduct.details as { title: string; content: string }[]) 
-            : [
-                { title: "Materials & Origin", content: "Handmade in our artisanal studio. Sourced with sustainable GOTS certified organic silk threads and high-grade core structure." },
-                { title: "Care Instructions", content: "To protect the delicate silk threads, avoid exposure to moisture, perfumes, and direct heat. Clean gently with a soft microfibre cloth." },
-                { title: "Shipping & Returns", content: "Complementary shipping on all domestic orders. Elegantly packed in a signature Thread-aura gift box. Returns accepted within 14 days." }
-            ]
+        details: (dbProduct.details as { title: string; content: string }[]) || []
     };
 
     return (

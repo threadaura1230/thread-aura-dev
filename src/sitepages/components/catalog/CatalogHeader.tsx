@@ -17,7 +17,7 @@ export default function CatalogHeader({
     images = [], 
 
 }: CatalogHeaderProps) {
-    const displayDesc = description || `Explore our handcrafted collection of ${categoryName.replace(/-/g, ' ')}. Each piece is meticulously designed with the finest threads and materials.`;
+    const displayDesc = description || "";
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
 

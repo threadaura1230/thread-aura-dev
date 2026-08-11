@@ -77,10 +77,11 @@ export default async function ExploreSelection() {
                   <h3 className="font-serif text-[24px] md:text-[30px] text-slate-900 leading-tight mb-4">
                     {subCol.name}
                   </h3>
-                  <p className="text-slate-600 text-[13px] md:text-[14px] leading-[1.8] max-w-[420px] font-light mb-8">
-                    {subCol.description ||
-                      `Handcrafted ${subCol.name} bangles. Lightweight, comfortable, and durable, they beautifully complement both ethnic and contemporary styles.`}
-                  </p>
+                  {subCol.description && (
+                    <p className="text-slate-600 text-[13px] md:text-[14px] leading-[1.8] max-w-[420px] font-light mb-8">
+                      {subCol.description}
+                    </p>
+                  )}
                   <Link
                     href={linkHref}
                     className="inline-flex items-center px-7 py-3 bg-[#073623] text-white text-[13px] font-medium hover:bg-[#0c4a31] transition-all rounded-[4px] tracking-wide shadow-sm group/btn"
