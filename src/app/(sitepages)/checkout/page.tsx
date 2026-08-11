@@ -23,7 +23,7 @@ export default function CheckoutPage() {
   });
 
   // Payment Selection State
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "Razorpay">("Razorpay");
+  const [paymentMethod, setPaymentMethod] = useState<"COD" | "Razorpay" | "PhonePe">("Razorpay");
   const [submitting, setSubmitting] = useState(false);
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -115,6 +115,24 @@ export default function CheckoutPage() {
           router.push(`/checkout/success?orderId=${data.orderId}`);
         } else {
           alert(data.error || "Failed to place COD order. Please try again.");
+        }
+      } else if (paymentMethod === "PhonePe") {
+        // Handle PhonePe Checkout
+        const res = await fetch("/api/checkout/phonepe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            shippingDetails,
+            items: cartItems,
+          }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success && data.redirectUrl) {
+          await clearCart();
+          window.location.href = data.redirectUrl;
+        } else {
+          alert(data.error || "Failed to initiate PhonePe transaction. Please try again.");
         }
       } else {
         // Handle Razorpay Checkout
@@ -422,7 +440,7 @@ export default function CheckoutPage() {
                   <h2 className="text-lg font-serif font-medium text-[#0f3a2a]">2. Payment selections</h2>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   
                   {/* Razorpay Option */}
                   <label 
@@ -443,7 +461,31 @@ export default function CheckoutPage() {
                     <div>
                       <p className="text-[13px] font-semibold text-slate-900 leading-tight">Pay Online (Razorpay)</p>
                       <p className="text-[11px] text-slate-500 mt-1 leading-normal">
-                        Pay securely using Credit Cards, Debit Cards, UPI, Netbanking, or Wallets.
+                        Secure Cards, UPI, Netbanking, or Wallets.
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* PhonePe Option */}
+                  <label 
+                    onClick={() => setPaymentMethod("PhonePe")}
+                    className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer bg-white ${
+                      paymentMethod === "PhonePe" 
+                        ? "border-[#0F3A2A] shadow-sm" 
+                        : "border-black/[0.05] hover:border-black/[0.12]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payment_choice"
+                      checked={paymentMethod === "PhonePe"}
+                      readOnly
+                      className="mt-1 accent-[#0F3A2A]"
+                    />
+                    <div>
+                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">PhonePe UPI</p>
+                      <p className="text-[11px] text-slate-500 mt-1 leading-normal">
+                        Fast and secure payment via PhonePe gateway.
                       </p>
                     </div>
                   </label>
@@ -465,9 +507,9 @@ export default function CheckoutPage() {
                       className="mt-1 accent-[#0F3A2A]"
                     />
                     <div>
-                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">Cash on Delivery (COD)</p>
+                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">Cash on Delivery</p>
                       <p className="text-[11px] text-slate-500 mt-1 leading-normal">
-                        Pay cash directly to the delivery executive upon receiving your order package.
+                        Pay cash directly to executive upon receiving order.
                       </p>
                     </div>
                   </label>

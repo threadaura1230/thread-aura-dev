@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     }
 
     const subCollections = await SubCollection.find(filter)
-      .populate("collection", "name")
+      .populate("collection", "name slug")
       .sort({ createdAt: -1 });
 
     return NextResponse.json({ success: true, subCollections });

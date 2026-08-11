@@ -246,7 +246,7 @@ export default function Header() {
                 </div>
 
                 {/* Navigation */}
-                <nav className="hidden lg:flex flex-none items-center justify-center space-x-5 xl:space-x-8 text-[13px] font-medium whitespace-nowrap">
+                <nav className="hidden lg:flex flex-none items-center justify-center space-x-3 xl:space-x-6 text-[12px] xl:text-[13px] font-medium whitespace-nowrap">
                     <Link href="/" className={navLinkClass(isHome)}>
                         Home
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isHome ? "scale-x-100" : "scale-x-0"}`} />
@@ -262,7 +262,7 @@ export default function Header() {
                         {/* Dropdown Menu */}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div className="w-48 bg-white border border-[#0f3a2a]/10 shadow-[0_2px_24px_rgba(15,58,42,0.05)] rounded-xl overflow-hidden py-2 flex flex-col">
-                                <Link href="/collections/all" className="px-4 py-2.5 hover:bg-[#f1efe7]/50 text-[#0f3a2a] font-semibold text-[13px] transition-colors border-b border-[#0f3a2a]/5">
+                                <Link href="/collections" className="px-4 py-2.5 hover:bg-[#f1efe7]/50 text-[#0f3a2a] font-semibold text-[13px] transition-colors border-b border-[#0f3a2a]/5">
                                     Shop All
                                 </Link>
                                 {collections.map((c) => (
@@ -309,7 +309,7 @@ export default function Header() {
                                 onFocus={() => {
                                     if (searchQuery.trim()) setShowResults(true);
                                 }}
-                                className="pl-9 pr-10 py-2 bg-[#e8e6df]/80 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-[#0f3a2a] w-32 lg:w-64 transition-all placeholder:text-slate-500 font-sans"
+                                className="pl-9 pr-10 py-2 bg-[#e8e6df]/80 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-[#0f3a2a] w-24 focus:w-44 lg:w-32 lg:focus:w-56 xl:w-48 xl:focus:w-64 transition-all duration-300 placeholder:text-slate-500 font-sans"
                             />
                             {searchQuery && (
                                 <button

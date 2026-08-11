@@ -24,7 +24,7 @@ export default function SmoothScroll() {
     });
 
     // Reset scroll to top on path change
-    window.scrollTo(0, 0);
+    lenis.scrollTo(0, { immediate: true });
 
     let rafId: number;
     function raf(time: number) {
