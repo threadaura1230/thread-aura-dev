@@ -16,20 +16,20 @@ import MobileMenu from "./MobileMenu";
  * left here so Header keeps working standalone.
  */
 const display = Fraunces({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
+    subsets: ["latin"],
+    weight: ["500", "600"],
+    style: ["normal", "italic"],
+    variable: "--font-display",
 });
 const body = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    variable: "--font-body",
 });
 const label = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-label",
+    subsets: ["latin"],
+    weight: ["500", "600"],
+    variable: "--font-label",
 });
 
 export default function Header() {
@@ -210,11 +210,10 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed inset-x-0 top-0 z-50 px-4 md:px-8 py-5 flex items-center justify-between transition-all duration-500 gap-4 ${
-                solid
+            className={`fixed inset-x-0 top-0 z-50 px-4 md:px-8 py-5 flex items-center justify-between transition-all duration-500 gap-4 ${solid
                     ? "bg-[#f1efe7]/90 backdrop-blur-md border-b border-[#0f3a2a]/10 shadow-[0_2px_24px_rgba(15,58,42,0.05)]"
                     : "bg-transparent border-b border-transparent"
-            }`}
+                }`}
             style={{ fontFamily: "var(--font-body)" }}
         >
             <div className={`${display.variable} ${body.variable} ${label.variable} contents`}>
@@ -252,14 +251,14 @@ export default function Header() {
                         Home
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isHome ? "scale-x-100" : "scale-x-0"}`} />
                     </Link>
-                    
+
                     {/* Collections Dropdown */}
                     <div className="relative group flex items-center h-full py-2">
                         <Link href="#collections" onClick={(e) => handleScroll(e, "collections")} className={`${navLinkClass(false)} flex items-center gap-1 cursor-pointer group-hover:text-[#151510]`}>
                             Collections
                             <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
                         </Link>
-                        
+
                         {/* Dropdown Menu */}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div className="w-48 bg-white border border-[#0f3a2a]/10 shadow-[0_2px_24px_rgba(15,58,42,0.05)] rounded-xl overflow-hidden py-2 flex flex-col">
@@ -274,7 +273,11 @@ export default function Header() {
                             </div>
                         </div>
                     </div>
-                    
+                    <Link href="/new-arrivals" className={`${navLinkClass(false)} group`}>
+                        New Arrivals
+                        <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+                    </Link>
+
                     <Link href="/orders" className={`${navLinkClass(isOrders)} group`}>
                         My Orders
                         <span className={`absolute left-0 right-0 -bottom-px h-[2px] bg-[#b13d33] transition-transform duration-300 origin-center ${isOrders ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`} />
@@ -321,7 +324,7 @@ export default function Header() {
                                     <X className="w-3.5 h-3.5" />
                                 </button>
                             )}
-                    </div>
+                        </div>
 
                         {/* Search Suggestions Overlay */}
                         {showResults && (
@@ -497,7 +500,7 @@ export default function Header() {
                                                 <div className="h-px bg-[#0f3a2a]/[0.08] my-1" />
                                             </>
                                         )}
-                                        
+
                                         <button
                                             onClick={() => {
                                                 toggleCart();
