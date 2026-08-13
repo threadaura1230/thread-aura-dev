@@ -14,10 +14,10 @@ export default function ImageGallery({ images, bgColor, productName }: ImageGall
     const hasImages = images && images.length > 0;
 
     return (
-        <div className="space-y-4 w-full">
+        <div className="space-y-4 w-full max-w-[450px] mx-auto">
             {/* Main Image View */}
             <div 
-                className="aspect-[4/5] rounded-lg w-full flex items-center justify-center relative overflow-hidden group transition-all duration-300"
+                className="aspect-square rounded-lg w-full flex items-center justify-center relative overflow-hidden group transition-all duration-300"
                 style={{ backgroundColor: bgColor }}
             >
                 {hasImages ? (
