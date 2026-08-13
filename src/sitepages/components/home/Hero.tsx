@@ -22,7 +22,7 @@ export default function Hero() {
       </div>
 
       {/* Floating circular badge (New Arrivals) */}
-      <Link 
+      {/* <Link 
         href="/new-arrivals" 
         className="absolute right-[10%] md:right-[15%] lg:right-[20%] top-[25%] md:top-[30%] z-20 hidden sm:flex flex-col items-center justify-center w-28 h-28 md:w-32 md:h-32 rounded-full bg-[#465448]/95 border-2 border-white/20 text-white shadow-xl hover:shadow-2xl hover:bg-[#3d4a3f] transition-all text-center p-2 group cursor-pointer"
       >
@@ -30,7 +30,7 @@ export default function Hero() {
         <span className="text-[12px] uppercase tracking-wider font-bold mb-1">Arrivals</span>
         <span className="w-8 h-[1px] bg-white/30 my-1"></span>
         <span className="text-[9px] uppercase tracking-widest group-hover:underline">Shop Now</span>
-      </Link>
+      </Link> */}
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 w-full flex-1 flex items-center pt-28 pb-12">
@@ -56,10 +56,10 @@ export default function Hero() {
               Shop Now <ArrowRight className="w-4 h-4" />
             </Link>
             <Link 
-              href="/collections" 
+              href="/new-arrivals" 
               className="px-6 py-3.5 bg-transparent text-slate-800 text-[12px] font-bold tracking-widest border border-slate-700 rounded hover:bg-slate-800/5 transition-colors uppercase"
             >
-              Explore Collections
+              Explore New Arrivals
             </Link>
           </div>
 
@@ -91,26 +91,18 @@ export default function Hero() {
 
       {/* Bottom Bar banner */}
       <div className="relative z-10 w-full bg-[#FAF9F5] border-t border-slate-200/60 py-6 px-6 md:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 items-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-10 justify-items-center">
           
           {/* Shipping */}
           <div className="flex items-center gap-3 border-r border-slate-200/80 last:border-r-0 md:pr-4">
             <Truck className="w-5 h-5 text-slate-700 stroke-[1.5]" />
             <div>
-              <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">Free Shipping</h4>
-              <p className="text-[10px] text-slate-500 mt-0.5">On orders over $50</p>
+              <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">Express Shipping</h4>
+              <p className="text-[10px] text-slate-500 mt-0.5">On orders over ₹50</p>
             </div>
           </div>
 
-          {/* Returns */}
-          <div className="flex items-center gap-3 border-r border-slate-200/80 last:border-r-0 md:px-4">
-            <Package className="w-5 h-5 text-slate-700 stroke-[1.5]" />
-            <div>
-              <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">Easy Returns</h4>
-              <p className="text-[10px] text-slate-500 mt-0.5">30-day return policy</p>
-            </div>
-          </div>
-
+         
           {/* Payment */}
           <div className="flex items-center gap-3 md:border-r md:border-slate-200/80 last:border-r-0 md:px-4">
             <ShieldCheck className="w-5 h-5 text-slate-700 stroke-[1.5]" />

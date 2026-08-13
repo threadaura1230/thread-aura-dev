@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { User, Lock, ShieldCheck, ArrowLeft, RefreshCw } from "lucide-react";
 
 export default function LoginForm({ secret }: { secret: string }) {
@@ -97,14 +96,12 @@ export default function LoginForm({ secret }: { secret: string }) {
         {/* Brand */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full overflow-hidden mb-4 cursor-pointer border border-black/[0.06] shadow-sm">
-              <Image
-                src="/logo.png"
-                alt="Thread-aura Logo"
-                width={80}
-                height={80}
-                className="object-cover"
-              />
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full overflow-hidden mb-4 cursor-pointer border border-black/[0.06] shadow-sm bg-white">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" className="w-[60px] h-[60px]">
+                <circle cx="44" cy="71" r="34" fill="none" stroke="#0f3a2a" strokeWidth="3.5" />
+                <circle cx="76" cy="71" r="34" fill="none" stroke="#d4af37" strokeWidth="3.5" />
+                <circle cx="60" cy="49" r="34" fill="none" stroke="#134a31" strokeWidth="3.5" />
+              </svg>
             </div>
           </Link>
           <h1 className="font-serif text-[24px] font-medium text-[#0f3a2a] tracking-wide">

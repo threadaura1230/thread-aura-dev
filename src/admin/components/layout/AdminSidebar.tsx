@@ -2,7 +2,6 @@
 
 import { usePathname, useParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -89,13 +88,11 @@ export default function AdminSidebar({
       <div className="flex h-16 items-center px-6 border-b border-black/[0.06]">
         <Link href="/" className="flex items-center gap-3">
           <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-            <Image
-              src="/logo.png"
-              alt="Thread-aura Logo"
-              width={40}
-              height={40}
-              className="object-cover"
-            />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" className="w-full h-full">
+              <circle cx="44" cy="71" r="34" fill="none" stroke="#0f3a2a" strokeWidth="3.5" />
+              <circle cx="76" cy="71" r="34" fill="none" stroke="#d4af37" strokeWidth="3.5" />
+              <circle cx="60" cy="49" r="34" fill="none" stroke="#134a31" strokeWidth="3.5" />
+            </svg>
           </div>
           <span className="font-serif text-[20px] font-medium tracking-wide text-[#0f3a2a]">
             Thread-aura
