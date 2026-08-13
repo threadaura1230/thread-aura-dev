@@ -49,7 +49,7 @@ const ProductSchema = new mongoose.Schema(
     },
     sizes: {
       type: [String],
-      default: ["2.4", "2.6", "2.8"],
+      default: ["2.0", "2.2", "2.4", "2.6", "2.8", "2.10"],
     },
     details: [
       {
