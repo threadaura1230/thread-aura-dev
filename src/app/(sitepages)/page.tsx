@@ -1,5 +1,6 @@
 import Hero from "@/sitepages/components/home/Hero";
 import Collection from "@/sitepages/components/home/Collection";
+import NewArrivals from "@/sitepages/components/home/Newarrivals";
 import FeatureProduct from "@/sitepages/components/home/Featureproduct";
 import ChooseUs from "@/sitepages/components/home/ChooseUs";
 import ExploreSelection from "@/sitepages/components/home/ExploreSelection";
@@ -16,6 +17,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <NewArrivals />
       <Collection />
       <FeatureProduct />
       <ChooseUs />
