@@ -83,8 +83,8 @@ export default function FeatureProduct() {
 
   return (
     <section id="shop-all" className="py-16 px-6 max-w-7xl mx-auto relative">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10">
-        <div className="text-center md:text-left">
+      <div className="flex items-end justify-between mb-10">
+        <div className="text-left">
           <p className="text-[10px] font-bold tracking-[0.2em] text-[#b13d33] mb-2 uppercase">
             Shop
           </p>
@@ -92,29 +92,28 @@ export default function FeatureProduct() {
             Featured Products
           </h2>
         </div>
+        {/* Carousel Controls in Header to prevent overlapping */}
+        <div className="flex gap-2.5">
+          <button 
+            onClick={() => scroll("left")} 
+            className="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
+            aria-label="Scroll Left"
+          >
+            <ChevronLeft className="w-5 h-5 text-slate-600" />
+          </button>
+          <button 
+            onClick={() => scroll("right")} 
+            className="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
+            aria-label="Scroll Right"
+          >
+            <ChevronRight className="w-5 h-5 text-slate-600" />
+          </button>
+        </div>
       </div>
 
-      {/* Outer wrapper for positioning controls */}
+      {/* Outer wrapper */}
       <div className="relative group/carousel">
         
-        {/* Left Control Arrow */}
-        <button 
-          onClick={() => scroll("left")} 
-          className="absolute left-[-15px] top-[40%] -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-md hover:bg-slate-50 transition-all cursor-pointer opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 duration-300"
-          aria-label="Scroll Left"
-        >
-          <ChevronLeft className="w-5 h-5 text-slate-600" />
-        </button>
-
-        {/* Right Control Arrow */}
-        <button 
-          onClick={() => scroll("right")} 
-          className="absolute right-[-15px] top-[40%] -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-full shadow-md hover:bg-slate-50 transition-all cursor-pointer opacity-100 md:opacity-0 md:group-hover/carousel:opacity-100 duration-300"
-          aria-label="Scroll Right"
-        >
-          <ChevronRight className="w-5 h-5 text-slate-600" />
-        </button>
-
         {/* Carousel Container */}
         <div 
           ref={scrollRef}
@@ -126,19 +125,19 @@ export default function FeatureProduct() {
               <div 
                 key={product._id} 
                 onClick={() => router.push(detailHref)}
-                className="snap-start flex-none w-[240px] md:w-[260px] bg-transparent flex flex-col overflow-hidden group/card cursor-pointer"
+                className="snap-start flex-none w-[240px] md:w-[260px] bg-white rounded-lg border border-slate-100 p-4 flex flex-col overflow-hidden group/card cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
               >
-                {/* Image Container */}
-                <div className="relative aspect-square w-full bg-white overflow-hidden rounded-xl border border-slate-100 flex items-center justify-center p-2">
+                {/* Image Container with full cover image */}
+                <div className="relative aspect-square w-full bg-slate-50 overflow-hidden rounded-lg flex items-center justify-center">
                   {product.images && product.images.length > 0 ? (
                     <img 
                       src={product.images[0]} 
                       alt={product.name}
-                      className="w-full h-full object-contain transition-transform duration-500 group-hover/card:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-slate-300 font-medium text-sm">
-                      Image Placeholder
+                      No Image
                     </div>
                   )}
                 </div>

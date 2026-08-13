@@ -98,7 +98,7 @@ export default function NewArrivals() {
         {/* Left Column: Big Feature Card */}
         <div 
           onClick={() => router.push(firstProductHref)}
-          className="relative group rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-slate-100 min-h-[450px] lg:min-h-full aspect-[4/5] lg:aspect-auto flex flex-col justify-end transition-all duration-500 hover:shadow-lg"
+          className="relative group rounded-lg overflow-hidden cursor-pointer shadow-sm border border-slate-100 min-h-[600px] aspect-[4/5] lg:aspect-auto flex flex-col justify-end transition-all duration-500 hover:shadow-lg"
         >
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full bg-[#F1EFE7]">
@@ -143,7 +143,7 @@ export default function NewArrivals() {
               <div 
                 key={product._id}
                 onClick={() => router.push(detailHref)}
-                className="group relative bg-[#F8F9FC] rounded-2xl border border-slate-100/80 p-5 flex flex-col justify-between aspect-square transition-all duration-300 hover:shadow-md cursor-pointer"
+                className="group relative bg-[#F8F9FC] rounded-lg border border-slate-100/80 p-5 flex flex-col justify-between aspect-square transition-all duration-300 hover:shadow-md cursor-pointer"
               >
                 {/* Image Area */}
                 <div className="flex-1 w-full flex items-center justify-center overflow-hidden mb-4 p-2 relative">

@@ -45,7 +45,7 @@ export default function Collection() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-center">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="bg-slate-200 rounded-2xl w-full aspect-square animate-pulse"></div>
+                        <div key={i} className="bg-slate-200 rounded-sm w-full aspect-square animate-pulse"></div>
                     ))}
                 </div>
             </section>
@@ -61,7 +61,7 @@ export default function Collection() {
                         Explore Our Collections
                     </p>
                     <h2 className="font-serif text-[32px] md:text-[40px] text-[#1E2522] leading-none">
-                        Find the Bracelet That Tells Your Story
+                        Find the Jewelry That Tells Your Story
                     </h2>
                 </div>
                 <Link href="/collections" className="inline-flex items-center text-[11px] font-bold text-slate-800 hover:text-black tracking-wider uppercase transition-colors mt-6 md:mt-0 group">
@@ -101,7 +101,7 @@ function CollectionCard({ col, isVisible }: { col: any; isVisible: boolean }) {
     return (
         <Link 
             href={`/collections/${col.slug}`}
-            className={`group flex flex-col rounded-2xl overflow-hidden border border-slate-200/50 bg-[#FAF9F5] shadow-sm hover:shadow-md transition-all duration-300 w-full ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'}`}
+            className={`group flex flex-col rounded-lg overflow-hidden border border-slate-200/50 bg-[#FAF9F5] shadow-sm hover:shadow-md transition-all duration-300 w-full ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'}`}
         >
             {/* Image Container */}
             <div className="relative aspect-[1.1] w-full bg-white overflow-hidden">
