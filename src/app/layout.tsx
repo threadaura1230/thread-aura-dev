@@ -23,7 +23,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`} suppressHydrationWarning>
+        <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased`} data-scroll-behavior="smooth" suppressHydrationWarning>
             <body className="min-h-screen flex flex-col font-sans text-slate-800 bg-[#F1EFE7]" suppressHydrationWarning>
                 <CartProviderWrapper>
                     <SmoothScroll />

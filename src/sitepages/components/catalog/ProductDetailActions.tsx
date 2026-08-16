@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Heart, ThumbsUp, ShoppingBag, X } from "lucide-react";
+import { Heart, ShoppingBag, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
@@ -13,6 +13,7 @@ interface ProductDetailActionsProps {
         price: number;
         material: string;
         bgColor: string;
+        color?: string | string[];
         images: string[];
         sizes: string[];
         slug: string;
@@ -27,7 +28,6 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
     const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
     const [selectedSize, setSelectedSize] = useState("");
     const [inWishlist, setInWishlist] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
     const [loading, setLoading] = useState(true);
     const [authenticated, setAuthenticated] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -60,7 +60,7 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
         if (product.sizes && product.sizes.length > 0) {
             setSelectedSize(product.sizes[0]);
         } else {
-            setSelectedSize("2.4");
+            setSelectedSize("2.0");
         }
     }, [product.sizes]);
 
@@ -77,14 +77,6 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
                         const data = await wlRes.json();
                         const ids = data.wishlist.map((p: any) => p.id);
                         setInWishlist(ids.includes(product.id));
-                    }
-
-                    // Check liked
-                    const lRes = await fetch("/api/user/liked");
-                    if (lRes.ok) {
-                        const data = await lRes.json();
-                        const ids = data.liked.map((p: any) => p.id);
-                        setIsLiked(ids.includes(product.id));
                     }
                 } else {
                     setAuthenticated(false);
@@ -121,28 +113,7 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
         }
     };
 
-    const handleLikeToggle = async () => {
-        if (!authenticated) {
-            router.push(`/login?error=auth_required_liked`);
-            return;
-        }
 
-        const previouslyLiked = isLiked;
-        setIsLiked(!previouslyLiked);
-
-        try {
-            const res = await fetch("/api/user/liked", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productId: product.id }),
-            });
-            if (!res.ok) {
-                setIsLiked(previouslyLiked);
-            }
-        } catch {
-            setIsLiked(previouslyLiked);
-        }
-    };
 
     const handleAddToCart = async () => {
         await addToCart(product, selectedSize, 1);
@@ -153,10 +124,29 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
         router.push("/checkout");
     };
 
-    const sizesList = product.sizes && product.sizes.length > 0 ? product.sizes : ["2.4", "2.6", "2.8"];
+    const sizesList = product.sizes && product.sizes.length > 0 ? product.sizes : ["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"];
 
     return (
         <div className="flex flex-col gap-6">
+            {/* Color Swatch Display */}
+            {product.color && (
+                <div className="flex items-center gap-2">
+                    <span className="text-[12px] text-slate-500 font-bold uppercase tracking-wider font-sans">
+                        Bangle Colors:
+                    </span>
+                    <div className="flex gap-1.5">
+                        {(Array.isArray(product.color) ? product.color : [product.color]).filter(Boolean).map((clr) => (
+                            <div 
+                                key={clr}
+                                className="w-5 h-5 rounded-full border border-black/10 shadow-sm"
+                                style={{ backgroundColor: clr }}
+                                title={clr}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {/* Size Selector */}
             <div>
                 <div className="flex justify-between items-center mb-3">
@@ -207,23 +197,6 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
 
                 {/* Like and Wishlist row */}
                 <div className="flex gap-4">
-                    {/* Like Button */}
-                    <button
-                        onClick={handleLikeToggle}
-                        disabled={loading}
-                        className={`flex-1 py-3 border border-slate-300 rounded hover:border-slate-800 transition-colors flex items-center justify-center gap-2 cursor-pointer ${isLiked ? "bg-blue-50/50 border-blue-200" : "bg-white"
-                            }`}
-                        title={isLiked ? "Liked" : "Like product"}
-                    >
-                        <ThumbsUp
-                            className={`w-4 h-4 transition-colors ${isLiked ? "text-blue-600 fill-blue-500" : "text-slate-600"
-                                }`}
-                        />
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 font-sans">
-                            {isLiked ? "Liked" : "Like"}
-                        </span>
-                    </button>
-
                     {/* Wishlist Button */}
                     <button
                         onClick={handleWishlistToggle}
@@ -262,116 +235,116 @@ export default function ProductDetailActions({ product }: ProductDetailActionsPr
                     <div className="absolute inset-y-0 right-0 max-w-full flex pl-6 h-full z-50">
                         <div className="w-screen max-w-[350px] bg-[#FDFBF7] shadow-xl flex flex-col h-screen max-h-screen border-l border-black/5 animate-in slide-in-from-right duration-300">
 
-                                {/* Drawer Header */}
-                                <div className="px-5 py-5 border-b border-black/10 flex items-center justify-between bg-[#F1EFE7]">
-                                    <h2 className="text-[16px] font-serif font-semibold text-[#073623]">Bangle Size Guide</h2>
-                                    <button
-                                        onClick={() => setIsSizeGuideOpen(false)}
-                                        className="text-slate-500 hover:text-black transition-colors p-1 rounded-full hover:bg-black/5 cursor-pointer"
-                                        aria-label="Close size guide"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
+                            {/* Drawer Header */}
+                            <div className="px-5 py-5 border-b border-black/10 flex items-center justify-between bg-[#F1EFE7]">
+                                <h2 className="text-[16px] font-serif font-semibold text-[#073623]">Bangle Size Guide</h2>
+                                <button
+                                    onClick={() => setIsSizeGuideOpen(false)}
+                                    className="text-slate-500 hover:text-black transition-colors p-1 rounded-full hover:bg-black/5 cursor-pointer"
+                                    aria-label="Close size guide"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+
+                            {/* Drawer Scrollable Content */}
+                            <div data-lenis-prevent className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-5 px-5 space-y-5">
+                                {/* Note Section */}
+                                <div className="p-3 bg-[#FAF8F2] border-l-4 border-[#073623] rounded-r-md text-[12px] text-slate-700 space-y-2 leading-relaxed shadow-sm">
+                                    <h4 className="font-sans font-extrabold uppercase tracking-wider text-[#073623] text-[10px]">
+                                        Note:
+                                    </h4>
+                                    <ol className="list-decimal pl-4 space-y-1.5">
+                                        <li>
+                                            All clients are requested to cross-verify their bangle sizes in cms before placing their order by measuring a bangle that fits you perfectly.
+                                        </li>
+                                        <li>
+                                            Bangle sizes will differ from brand to brand, so this step is mandatory to avoid confusion.
+                                        </li>
+                                    </ol>
                                 </div>
 
-                                {/* Drawer Scrollable Content */}
-                                <div data-lenis-prevent className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-5 px-5 space-y-5">
-                                    {/* Note Section */}
-                                    <div className="p-3 bg-[#FAF8F2] border-l-4 border-[#073623] rounded-r-md text-[12px] text-slate-700 space-y-2 leading-relaxed shadow-sm">
-                                        <h4 className="font-sans font-extrabold uppercase tracking-wider text-[#073623] text-[10px]">
-                                            Note:
-                                        </h4>
-                                        <ol className="list-decimal pl-4 space-y-1.5">
-                                            <li>
-                                                All clients are requested to cross-verify their bangle sizes in cms before placing their order by measuring a bangle that fits you perfectly.
-                                            </li>
-                                            <li>
-                                                Bangle sizes will differ from brand to brand, so this step is mandatory to avoid confusion.
-                                            </li>
-                                        </ol>
-                                    </div>
-
-                                    {/* Instructions Section */}
-                                    <div className="space-y-2 text-[12px] text-slate-700 leading-relaxed">
-                                        <h4 className="font-serif font-bold text-[14px] text-[#073623]">
-                                            Instructions:
-                                        </h4>
-                                        <ol className="list-decimal pl-4 space-y-1.5">
-                                            <li>Take a bangle that fits perfectly. Check if it fits both hands.</li>
-                                            <li>Draw a circle of the bangle&apos;s inner diameter on paper.</li>
-                                            <li>Measure the inner diameter with a scale/ruler and verify with the size chart below.</li>
-                                        </ol>
-                                    </div>
-
-                                    {/* SVG Diagram */}
-                                    <div className="flex flex-col items-center justify-center py-3 bg-white rounded-lg border border-black/5 shadow-sm">
-                                        <svg viewBox="0 0 200 200" className="w-32 h-32">
-                                            {/* Outer circle representing bangle */}
-                                            <circle cx="100" cy="100" r="80" stroke="#073623" strokeWidth="8" fill="none" />
-                                            <circle cx="100" cy="100" r="76" stroke="#fff" strokeWidth="1" fill="none" opacity="0.3" />
-
-                                            {/* Dimension Line */}
-                                            <line x1="26" y1="100" x2="174" y2="100" stroke="#b13d33" strokeWidth="2" strokeDasharray="3 3" />
-
-                                            {/* Left Arrow Head */}
-                                            <polygon points="26,100 34,96 34,104" fill="#b13d33" />
-
-                                            {/* Right Arrow Head */}
-                                            <polygon points="174,100 166,96 166,104" fill="#b13d33" />
-
-                                            {/* Text Labels */}
-                                            <text x="100" y="88" textAnchor="middle" fill="#073623" fontSize="9" fontWeight="bold" letterSpacing="0.05em">INNER DIAMETER</text>
-                                            <text x="100" y="116" textAnchor="middle" fill="#b13d33" fontSize="13" fontWeight="bold">X</text>
-                                        </svg>
-                                        <span className="text-[10px] text-slate-500 mt-1 font-medium tracking-wide">Inner Diameter (X)</span>
-                                    </div>
-
-                                    {/* Size Chart Table */}
-                                    <div className="overflow-hidden border border-black/10 rounded-lg shadow-sm bg-white">
-                                        <table className="w-full text-center border-collapse text-[12px]">
-                                            <thead>
-                                                <tr className="bg-[#073623] text-white font-sans font-bold text-[10px] uppercase tracking-wider">
-                                                    <th className="py-2 px-3 border-r border-white/10">Size in Inches</th>
-                                                    <th className="py-2 px-3">Size in Cms</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-black/5 text-slate-800 font-medium">
-                                                <tr className="hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.0</td>
-                                                    <td className="py-1.5">5</td>
-                                                </tr>
-                                                <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.2</td>
-                                                    <td className="py-1.5">5.4</td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.4</td>
-                                                    <td className="py-1.5">5.8</td>
-                                                </tr>
-                                                <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.6</td>
-                                                    <td className="py-1.5">6</td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.8</td>
-                                                    <td className="py-1.5">6.3</td>
-                                                </tr>
-                                                <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.10</td>
-                                                    <td className="py-1.5">6.5</td>
-                                                </tr>
-                                                <tr className="hover:bg-slate-50 transition-colors">
-                                                    <td className="py-1.5 border-r border-black/5">2.12</td>
-                                                    <td className="py-1.5">7</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                {/* Instructions Section */}
+                                <div className="space-y-2 text-[12px] text-slate-700 leading-relaxed">
+                                    <h4 className="font-serif font-bold text-[14px] text-[#073623]">
+                                        Instructions:
+                                    </h4>
+                                    <ol className="list-decimal pl-4 space-y-1.5">
+                                        <li>Take a bangle that fits perfectly. Check if it fits both hands.</li>
+                                        <li>Draw a circle of the bangle&apos;s inner diameter on paper.</li>
+                                        <li>Measure the inner diameter with a scale/ruler and verify with the size chart below.</li>
+                                    </ol>
                                 </div>
+
+                                {/* SVG Diagram */}
+                                <div className="flex flex-col items-center justify-center py-3 bg-white rounded-lg border border-black/5 shadow-sm">
+                                    <svg viewBox="0 0 200 200" className="w-32 h-32">
+                                        {/* Outer circle representing bangle */}
+                                        <circle cx="100" cy="100" r="80" stroke="#073623" strokeWidth="8" fill="none" />
+                                        <circle cx="100" cy="100" r="76" stroke="#fff" strokeWidth="1" fill="none" opacity="0.3" />
+
+                                        {/* Dimension Line */}
+                                        <line x1="26" y1="100" x2="174" y2="100" stroke="#b13d33" strokeWidth="2" strokeDasharray="3 3" />
+
+                                        {/* Left Arrow Head */}
+                                        <polygon points="26,100 34,96 34,104" fill="#b13d33" />
+
+                                        {/* Right Arrow Head */}
+                                        <polygon points="174,100 166,96 166,104" fill="#b13d33" />
+
+                                        {/* Text Labels */}
+                                        <text x="100" y="88" textAnchor="middle" fill="#073623" fontSize="9" fontWeight="bold" letterSpacing="0.05em">INNER DIAMETER</text>
+                                        <text x="100" y="116" textAnchor="middle" fill="#b13d33" fontSize="13" fontWeight="bold">X</text>
+                                    </svg>
+                                    <span className="text-[10px] text-slate-500 mt-1 font-medium tracking-wide">Inner Diameter (X)</span>
+                                </div>
+
+                                {/* Size Chart Table */}
+                                <div className="overflow-hidden border border-black/10 rounded-lg shadow-sm bg-white">
+                                    <table className="w-full text-center border-collapse text-[12px]">
+                                        <thead>
+                                            <tr className="bg-[#073623] text-white font-sans font-bold text-[10px] uppercase tracking-wider">
+                                                <th className="py-2 px-3 border-r border-white/10">Size in Inches</th>
+                                                <th className="py-2 px-3">Size in Cms</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-black/5 text-slate-800 font-medium">
+                                            <tr className="hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.0</td>
+                                                <td className="py-1.5">5</td>
+                                            </tr>
+                                            <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.2</td>
+                                                <td className="py-1.5">5.4</td>
+                                            </tr>
+                                            <tr className="hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.4</td>
+                                                <td className="py-1.5">5.8</td>
+                                            </tr>
+                                            <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.6</td>
+                                                <td className="py-1.5">6</td>
+                                            </tr>
+                                            <tr className="hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.8</td>
+                                                <td className="py-1.5">6.3</td>
+                                            </tr>
+                                            <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.10</td>
+                                                <td className="py-1.5">6.5</td>
+                                            </tr>
+                                            <tr className="hover:bg-slate-50 transition-colors">
+                                                <td className="py-1.5 border-r border-black/5">2.12</td>
+                                                <td className="py-1.5">7</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            , document.body)}
-            </div>
+                , document.body)}
+        </div>
     );
 }

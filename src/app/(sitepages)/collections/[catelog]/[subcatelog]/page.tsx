@@ -124,6 +124,7 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
         material: p.material || "",
         tag: p.tag || "",
         bgColor: p.bgColor || "#1f332a",
+        color: p.color || "",
         images: p.images || [],
         slug: p.slug,
         subCollectionSlug: subCollection.slug,

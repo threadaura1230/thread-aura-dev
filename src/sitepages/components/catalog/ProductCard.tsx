@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, ThumbsUp } from "lucide-react";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -24,7 +24,6 @@ interface ProductCardProps {
 
 // Simple global cache to avoid n+1 API fetches for grids
 let wishlistCache: string[] | null = null;
-let likedCache: string[] | null = null;
 let isAuthenticated: boolean | null = null;
 let isFetching = false;
 const listeners = new Set<() => void>();
@@ -42,7 +41,7 @@ function notify() {
 
 async function fetchUserData() {
     if (isFetching) return;
-    if (wishlistCache !== null && likedCache !== null && isAuthenticated !== null) return;
+    if (wishlistCache !== null && isAuthenticated !== null) return;
     isFetching = true;
     try {
         const verifyRes = await fetch("/api/auth/verify");
@@ -55,17 +54,9 @@ async function fetchUserData() {
                 const data = await wlRes.json();
                 wishlistCache = data.wishlist.map((p: any) => p.id);
             }
-            
-            // Fetch liked
-            const lRes = await fetch("/api/user/liked");
-            if (lRes.ok) {
-                const data = await lRes.json();
-                likedCache = data.liked.map((p: any) => p.id);
-            }
         } else {
             isAuthenticated = false;
             wishlistCache = [];
-            likedCache = [];
         }
     } catch (err) {
         console.error("Error fetching user data in ProductCard:", err);
@@ -79,12 +70,11 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
     const router = useRouter();
     const { addToCart } = useCart();
     const [inWishlist, setInWishlist] = useState(false);
-    const [isLiked, setIsLiked] = useState(false);
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : "2.4";
+        const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : "2.0";
         await addToCart(product, defaultSize, 1);
     };
 
@@ -96,7 +86,6 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
     useEffect(() => {
         const updateState = () => {
             setInWishlist(wishlistCache?.includes(product.id) || false);
-            setIsLiked(likedCache?.includes(product.id) || false);
         };
 
         const unsubscribe = subscribe(updateState);
@@ -153,50 +142,6 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
         }
     };
 
-    const handleLikeToggle = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (isAuthenticated === false) {
-            router.push(`/login?error=auth_required_liked`);
-            return;
-        }
-
-        // Optimistic UI update
-        const previouslyLiked = isLiked;
-        setIsLiked(!previouslyLiked);
-        if (likedCache) {
-            if (previouslyLiked) {
-                likedCache = likedCache.filter((id) => id !== product.id);
-            } else {
-                likedCache.push(product.id);
-            }
-            notify();
-        }
-
-        try {
-            const res = await fetch("/api/user/liked", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productId: product.id }),
-            });
-            if (!res.ok) {
-                // Revert on error
-                setIsLiked(previouslyLiked);
-                if (likedCache) {
-                    if (previouslyLiked) {
-                        likedCache.push(product.id);
-                    } else {
-                        likedCache = likedCache.filter((id) => id !== product.id);
-                    }
-                    notify();
-                }
-            }
-        } catch {
-            setIsLiked(previouslyLiked);
-        }
-    };
-
     return (
         <div className="group relative flex flex-col w-full">
             {/* Image Container */}
@@ -249,21 +194,8 @@ export default function ProductCard({ product, categorySlug }: ProductCardProps)
                     <p className="text-[13px] font-semibold text-slate-900">₹{product.price.toFixed(2)}</p>
                 </div>
                 
-                {/* Wishlist & Like Icons */}
+                {/* Wishlist Icon */}
                 <div className="flex items-center gap-3 pt-0.5">
-                    {/* Like Button */}
-                    <button 
-                        onClick={handleLikeToggle}
-                        className={`transition-colors duration-200 ${
-                            isLiked 
-                                ? "text-blue-600 hover:text-blue-700" 
-                                : "text-slate-400 hover:text-blue-500"
-                        }`}
-                        title={isLiked ? "Unlike product" : "Like product"}
-                    >
-                        <ThumbsUp className={`w-[16px] h-[16px] stroke-[1.5] ${isLiked ? "fill-blue-50" : ""}`} />
-                    </button>
-
                     {/* Wishlist Button */}
                     <button 
                         onClick={handleWishlistToggle}

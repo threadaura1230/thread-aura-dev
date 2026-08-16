@@ -61,6 +61,7 @@ export async function GET(request: Request) {
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
         { material: { $regex: search, $options: "i" } },
+        { color: { $regex: search, $options: "i" } },
       ];
     }
 
@@ -95,6 +96,7 @@ export async function POST(request: Request) {
       material,
       tag,
       bgColor,
+      color,
       sizes,
       details,
       isActive,
@@ -141,7 +143,8 @@ export async function POST(request: Request) {
       material: material || "",
       tag: tag || "",
       bgColor: bgColor || "#1f332a",
-      sizes: sizes || ["2.4", "2.6", "2.8"],
+      color: color || "",
+      sizes: sizes || ["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"],
       details: details || [],
       isActive: isActive !== undefined ? isActive : true,
     });

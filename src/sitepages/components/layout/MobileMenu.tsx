@@ -420,8 +420,8 @@ export default function MobileMenu({
                 </div>
               </div>
 
-              {/* Wishlist / Liked / Orders — three separate features, three tiles */}
-              <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+              {/* Wishlist / Orders — two separate features, two tiles */}
+              <div className="grid grid-cols-2 gap-2 text-center text-[11px]">
                 <Link
                   href="/wishlist"
                   onClick={onClose}
@@ -429,14 +429,6 @@ export default function MobileMenu({
                 >
                   <Heart className="w-3.5 h-3.5 text-[#151510]/50" />
                   Wishlist
-                </Link>
-                <Link
-                  href="/liked"
-                  onClick={onClose}
-                  className="flex flex-col items-center justify-center gap-1 py-2.5 border border-[#0f3a2a]/[0.08] hover:bg-[#0f3a2a]/[0.04] text-[#151510]/75 rounded-lg transition-all"
-                >
-                  <ThumbsUp className="w-3.5 h-3.5 text-[#151510]/50" />
-                  Liked
                 </Link>
                 <Link
                   href="/orders"

@@ -150,6 +150,7 @@ export default async function CatalogPage({
         material: p.material || "",
         tag: p.tag || "",
         bgColor: p.bgColor || "#1f332a",
+        color: p.color || "",
         images: p.images || [],
         slug: p.slug,
         subCollectionSlug: p.subCollection && typeof p.subCollection === "object" ? (p.subCollection as any).slug : "general",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Edit, Trash2, X, Upload, Check, AlertCircle, Box } from "lucide-react";
+import { Plus, Edit, Trash2, X, Upload, Check, AlertCircle, Box, ChevronDown } from "lucide-react";
 
 interface Collection {
   _id: string;
@@ -18,6 +18,30 @@ interface ProductDetailItem {
   title: string;
   content: string;
 }
+
+const COLOR_SWATCHES: Record<string, string> = {
+  red: "#c0392b",
+  maroon: "#6b1f2a",
+  pink: "#e91e90",
+  rose: "#e8a0bf",
+  orange: "#e67e22",
+  yellow: "#f1c40f",
+  gold: "#d4af37",
+  green: "#27ae60",
+  teal: "#0e6655",
+  blue: "#2980b9",
+  navy: "#1a3054",
+  purple: "#8e44ad",
+  violet: "#7c3aed",
+  brown: "#6d4c41",
+  beige: "#d4c5a9",
+  cream: "#faf3e0",
+  white: "#ffffff",
+  silver: "#bdc3c7",
+  grey: "#7f8c8d",
+  black: "#1a1a1a",
+  multicolor: "conic-gradient(red, yellow, green, blue, purple, red)",
+};
 
 interface Product {
   _id: string;
@@ -37,6 +61,7 @@ interface Product {
   material: string;
   tag: string;
   bgColor: string;
+  color?: string[];
   sizes: string[];
   details: ProductDetailItem[];
   isActive: boolean;
@@ -66,7 +91,9 @@ export default function ProductsManager() {
   const [material, setMaterial] = useState("");
   const [tag, setTag] = useState("");
   const [bgColor, setBgColor] = useState("#1f332a");
-  const [sizes, setSizes] = useState<string[]>(["2.4", "2.6", "2.8"]);
+  const [color, setColor] = useState<string[]>([]);
+  const [sizes, setSizes] = useState<string[]>(["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"]);
+  const [sizeDropdownOpen, setSizeDropdownOpen] = useState(false);
   const [details, setDetails] = useState<ProductDetailItem[]>([]);
   const [isActive, setIsActive] = useState(true);
 
@@ -141,7 +168,9 @@ export default function ProductsManager() {
     setMaterial("");
     setTag("");
     setBgColor("#1f332a");
-    setSizes(["2.4", "2.6", "2.8"]);
+    setColor([]);
+    setSizes(["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"]);
+    setSizeDropdownOpen(false);
     setDetails([]);
     setIsActive(true);
     setNewDetailTitle("");
@@ -163,7 +192,9 @@ export default function ProductsManager() {
     setMaterial(prod.material || "");
     setTag(prod.tag || "");
     setBgColor(prod.bgColor || "#1f332a");
+    setColor(Array.isArray(prod.color) ? prod.color : prod.color ? [prod.color] : []);
     setSizes(prod.sizes || []);
+    setSizeDropdownOpen(false);
     setDetails(prod.details || []);
     setIsActive(prod.isActive);
     setNewDetailTitle("");
@@ -252,6 +283,7 @@ export default function ProductsManager() {
       material,
       tag,
       bgColor,
+      color,
       sizes,
       details,
       isActive,
@@ -463,6 +495,22 @@ export default function ProductsManager() {
                         <span>Sub: <strong className="text-[#8b926d]">{prod.subCollection?.name}</strong></span>
                       </>
                     )}
+                    {prod.color && (Array.isArray(prod.color) ? prod.color : [prod.color]).filter(Boolean).length > 0 && (
+                      <>
+                        <span>•</span>
+                        <span className="inline-flex items-center gap-1">
+                          Colors:{" "}
+                          {(Array.isArray(prod.color) ? prod.color : [prod.color]).filter(Boolean).map((clr, i) => (
+                            <span
+                              key={i}
+                              className="w-2.5 h-2.5 rounded-full border border-black/10 shadow-sm"
+                              style={{ backgroundColor: clr }}
+                              title={clr}
+                            />
+                          ))}
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   <p className="text-[12px] text-slate-500 leading-relaxed line-clamp-3">
@@ -653,23 +701,97 @@ export default function ProductsManager() {
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 relative">
                   <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                     Available Sizes (Inner Bangle Diameter)
                   </label>
-                  <div className="flex items-center gap-4 py-2">
-                    {["2.4", "2.6", "2.8"].map((size) => (
-                      <label key={size} className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={sizes.includes(size)}
-                          onChange={() => handleSizeToggle(size)}
-                          className="w-4.5 h-4.5 accent-[#073623] rounded"
-                        />
-                        <span>{size}</span>
-                      </label>
-                    ))}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setSizeDropdownOpen(!sizeDropdownOpen)}
+                      className="w-full rounded-xl border border-black/[0.08] bg-white px-4 py-2.5 text-sm focus:outline-none focus:border-[#073623] cursor-pointer text-left flex justify-between items-center"
+                    >
+                      <span className="truncate">
+                        {sizes.length === 0
+                          ? "No sizes selected"
+                          : sizes.length === 7
+                          ? "All sizes selected"
+                          : sizes.join(", ")}
+                      </span>
+                      <ChevronDown className="h-4 w-4 text-slate-500 flex-shrink-0" />
+                    </button>
+                    {sizeDropdownOpen && (
+                      <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-black/[0.08] rounded-xl shadow-lg p-3 space-y-2 max-h-48 overflow-y-auto">
+                        {["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"].map((size) => (
+                          <label
+                            key={size}
+                            className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-50 rounded-lg text-sm text-slate-700 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={sizes.includes(size)}
+                              onChange={() => handleSizeToggle(size)}
+                              className="w-4 h-4 accent-[#073623] rounded cursor-pointer"
+                            />
+                            <span>{size}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                </div>
+              </div>
+
+              {/* Bangles Colors Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Bangles Colors
+                </label>
+                
+                {/* Active colors list */}
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {color.map((clr, idx) => (
+                    <div 
+                      key={idx}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-black/[0.08] rounded-full text-xs font-semibold text-slate-800 shadow-sm"
+                    >
+                      <span className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ backgroundColor: clr }} />
+                      <span>{clr}</span>
+                      <button
+                        type="button"
+                        onClick={() => setColor((prev) => prev.filter((_, i) => i !== idx))}
+                        className="text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {color.length === 0 && (
+                    <span className="text-[11px] text-slate-400 italic">No colors selected</span>
+                  )}
+                </div>
+
+                {/* Add new color controls */}
+                <div className="flex gap-3 max-w-xs">
+                  <input
+                    type="color"
+                    id="newColorPicker"
+                    defaultValue="#ffffff"
+                    className="w-12 h-10 border border-black/[0.08] rounded-xl cursor-pointer p-1 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const picker = document.getElementById("newColorPicker") as HTMLInputElement;
+                      const selectedVal = picker?.value;
+                      if (selectedVal && !color.includes(selectedVal)) {
+                        setColor((prev) => [...prev, selectedVal]);
+                      }
+                    }}
+                    className="px-4 py-2 bg-[#073623] hover:bg-[#0c4a31] text-white text-xs font-semibold uppercase tracking-wider rounded-xl shadow-sm transition-colors cursor-pointer"
+                  >
+                    Add Color
+                  </button>
                 </div>
               </div>
 

@@ -531,14 +531,6 @@ export default function Header() {
                                         {user && (
                                             <>
                                                 <Link
-                                                    href="/liked"
-                                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
-                                                    onClick={() => setShowDropdown(false)}
-                                                >
-                                                    <ThumbsUp className="w-4 h-4" />
-                                                    <span>Liked Products</span>
-                                                </Link>
-                                                <Link
                                                     href="/orders"
                                                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#151510]/80 hover:bg-[#0f3a2a]/5 hover:text-[#0f3a2a] rounded-lg transition-colors text-left font-medium"
                                                     onClick={() => setShowDropdown(false)}

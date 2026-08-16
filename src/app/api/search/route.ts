@@ -74,6 +74,7 @@ export async function GET(request: Request) {
         { description: { $regex: cleanSearchText, $options: "i" } },
         { material: { $regex: cleanSearchText, $options: "i" } },
         { tag: { $regex: cleanSearchText, $options: "i" } },
+        { color: { $regex: cleanSearchText, $options: "i" } },
         { collection: { $in: matchingColIds } },
         { subCollection: { $in: matchingSubColIds } }
       ];

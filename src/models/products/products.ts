@@ -44,8 +44,8 @@ const ProductSchema = new mongoose.Schema(
       default: "#1f332a",
     },
     color: {
-      type: String,
-      default: "",
+      type: [String],
+      default: [],
     },
     sizes: {
       type: [String],

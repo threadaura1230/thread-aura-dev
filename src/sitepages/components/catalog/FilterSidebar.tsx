@@ -43,11 +43,23 @@ const COLOR_SWATCHES: Record<string, string> = {
 
 function getSwatchStyle(color: string): React.CSSProperties {
     const key = color.toLowerCase().trim();
+    if (key.startsWith("#")) {
+        return { backgroundColor: key };
+    }
     const val = COLOR_SWATCHES[key];
     if (val?.startsWith("conic")) {
         return { background: val };
     }
     return { backgroundColor: val || "#a0a0a0" };
+}
+
+function getColorName(color: string): string {
+    const key = color.toLowerCase().trim();
+    const entry = Object.entries(COLOR_SWATCHES).find(([_, hex]) => hex.toLowerCase() === key);
+    if (entry) {
+        return entry[0];
+    }
+    return color;
 }
 
 export default function FilterSidebar({
@@ -248,7 +260,7 @@ export default function FilterSidebar({
                                         <button
                                             key={idx}
                                             onClick={() => handleToggleList("color", clr)}
-                                            title={clr}
+                                            title={getColorName(clr)}
                                             className={`relative w-8 h-8 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${
                                                 isChecked
                                                     ? "border-[#134A31] ring-2 ring-[#134A31]/30 scale-110"
@@ -278,7 +290,7 @@ export default function FilterSidebar({
                                         key={clr}
                                         className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#134A31]/10 text-[#134A31] rounded-full text-[11px] font-medium capitalize"
                                     >
-                                        {clr}
+                                        {getColorName(clr)}
                                         <X
                                             className="w-3 h-3 cursor-pointer hover:text-red-600 transition-colors"
                                             onClick={() => handleToggleList("color", clr)}

@@ -78,6 +78,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         description: dbProduct.description || "",
         sizes: (dbProduct.sizes as string[]) || [],
         bgColor: dbProduct.bgColor || "#1f332a",
+        color: dbProduct.color || "",
         images: (dbProduct.images as string[]) || [],
         slug: dbProduct.slug,
         categorySlug: catelog,
@@ -132,19 +133,16 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                             {product.description}
                         </p>
 
-                        {/* CTA & Wishlist/Liked Buttons (including Size Selector) */}
+                        {/* CTA & Wishlist Button (including Size Selector) */}
                         <ProductDetailActions product={product} />
 
                         {/* Trust Badges */}
-                        <div className="grid grid-cols-3 gap-4 pt-6 border-t border-black/10 text-center">
+                        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-black/10 text-center">
                             <div className="flex flex-col items-center">
                                 <Truck className="w-5 h-5 text-slate-700 mb-2" />
                                 <span className="text-[10px] text-slate-600 font-medium">Free Delivery</span>
                             </div>
-                            <div className="flex flex-col items-center">
-                                <RefreshCw className="w-5 h-5 text-slate-700 mb-2" />
-                                <span className="text-[10px] text-slate-600 font-medium">14-Day Returns</span>
-                            </div>
+                          
                             <div className="flex flex-col items-center">
                                 <ShieldCheck className="w-5 h-5 text-slate-700 mb-2" />
                                 <span className="text-[10px] text-slate-600 font-medium">Secure Checkout</span>

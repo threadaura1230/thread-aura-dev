@@ -72,6 +72,7 @@ export async function PUT(
     if (body.material !== undefined) product.material = body.material;
     if (body.tag !== undefined) product.tag = body.tag;
     if (body.bgColor !== undefined) product.bgColor = body.bgColor;
+    if (body.color !== undefined) product.color = body.color;
     if (body.sizes !== undefined) product.sizes = body.sizes;
     if (body.details !== undefined) product.details = body.details;
     if (body.isActive !== undefined) product.isActive = body.isActive;

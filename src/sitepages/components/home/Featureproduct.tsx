@@ -55,7 +55,7 @@ export default function FeatureProduct() {
       subCollectionSlug: product.subCollection?.slug || "general",
       categorySlug: product.collection?.slug || "collections",
     };
-    const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : "2.4";
+    const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : "2.0";
     await addToCart(cartProduct, defaultSize, 1);
   };
 
