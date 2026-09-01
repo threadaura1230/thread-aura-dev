@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ChevronRight, ShoppingCart } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -103,10 +104,13 @@ export default function NewArrivals() {
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full bg-[#F1EFE7]">
             {firstProduct.images && firstProduct.images.length > 0 ? (
-              <img 
+              <Image 
                 src={firstProduct.images[0]} 
                 alt={firstProduct.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                priority
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-slate-400 font-medium">
@@ -143,15 +147,17 @@ export default function NewArrivals() {
               <div 
                 key={product._id}
                 onClick={() => router.push(detailHref)}
-                className="group relative bg-[#F8F9FC] rounded-lg border border-slate-100/80 p-5 flex flex-col justify-between aspect-square transition-all duration-300 hover:shadow-md cursor-pointer"
+                className="group relative bg-[#F8F9FC] rounded-lg border border-slate-100/80 p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-md cursor-pointer"
               >
                 {/* Image Area */}
-                <div className="flex-1 w-full flex items-center justify-center overflow-hidden mb-4 p-2 relative">
+                <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden mb-4 rounded-md bg-white/40">
                   {product.images && product.images.length > 0 ? (
-                    <img 
+                    <Image
                       src={product.images[0]} 
                       alt={product.name}
-                      className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="text-slate-300 text-xs">No Image</div>

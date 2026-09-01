@@ -79,12 +79,12 @@ export default function Hero() {
               <span className="text-[10px] font-semibold text-slate-700 leading-tight">Handcrafted With Love</span>
             </div>
 
-            <div className="flex flex-col items-start gap-1.5 max-w-[120px]">
+            {/* <div className="flex flex-col items-start gap-1.5 max-w-[120px]">
               <div className="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700">
                 <Droplet className="w-4 h-4 stroke-[1.5]" />
               </div>
               <span className="text-[10px] font-semibold text-slate-700 leading-tight">Waterproof & Tarnish Free</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function Hero() {
             <Truck className="w-5 h-5 text-slate-700 stroke-[1.5]" />
             <div>
               <h4 className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">Express Shipping</h4>
-              <p className="text-[10px] text-slate-500 mt-0.5">On orders over ₹50</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">On orders over ₹1500</p>
             </div>
           </div>
 
