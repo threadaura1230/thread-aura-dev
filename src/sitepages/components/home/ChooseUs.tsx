@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function ChooseUs() {
   return (
     <section id="about" className="relative w-full min-h-[600px] lg:min-h-[800px] bg-[#071411] overflow-hidden flex flex-col justify-center py-24 px-6">
-      
+
       {/* Scattered Floating Image Placeholders */}
       {/* Note: I've added a subtle hover effect to make them feel interactive even as placeholders */}
 

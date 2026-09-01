@@ -47,7 +47,7 @@ export default function Contact() {
       <div className="w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full bg-[#12221c]">
         {/* We use the filename 'contact-bangles.png' */}
         <Image
-          src="/contact-bangles.png" 
+          src="/contact us.png"
           alt="Pink Silk Thread Bangles"
           fill
           className="object-cover relative z-10"
@@ -66,8 +66,8 @@ export default function Contact() {
 
           <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="First name *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
@@ -76,8 +76,8 @@ export default function Contact() {
               />
             </div>
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Last name *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
@@ -86,8 +86,8 @@ export default function Contact() {
               />
             </div>
             <div className="relative">
-              <input 
-                type="email" 
+              <input
+                type="email"
                 placeholder="Email *"
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors"
                 required
@@ -96,7 +96,7 @@ export default function Contact() {
               />
             </div>
             <div className="relative">
-              <textarea 
+              <textarea
                 placeholder="Message"
                 rows={2}
                 className="w-full bg-transparent border-b border-[#2a3c35] pb-3 text-white text-[13px] font-light placeholder:text-[#A4B5AE] focus:outline-none focus:border-[#527063] transition-colors resize-none"
@@ -109,7 +109,7 @@ export default function Contact() {
             {error && <p className="text-red-400 text-[13px]">{error}</p>}
             {success && <p className="text-green-400 text-[13px]">Message sent successfully!</p>}
 
-            <button 
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-4 mt-8 bg-[#FFFBE4] text-[#0A1310] text-[13px] font-medium tracking-wide hover:bg-[#f2ead3] transition-colors disabled:opacity-50"
