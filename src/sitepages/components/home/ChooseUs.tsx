@@ -31,7 +31,7 @@ export default function ChooseUs() {
       </div>
 
       {/* Image 3: Bottom Left/Center (Landscape) */}
-      <div className="hidden md:block absolute bottom-[10%] left-[25%] lg:left-[30%] w-[240px] lg:w-[300px] aspect-[3/2] bg-[#12241e] shadow-2xl group transition-transform duration-500 hover:scale-105 hover:z-20">
+      <div className="hidden md:block absolute bottom-[8%] left-[25%] lg:left-[30%] w-[240px] lg:w-[300px] aspect-[3/2] bg-[#12241e] shadow-2xl group transition-transform duration-500 hover:scale-105 hover:z-20">
         <Image
           src="/choose-3.png"
           alt="Vibrant pastel silk thread bangles collection"
