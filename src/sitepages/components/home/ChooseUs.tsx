@@ -10,7 +10,7 @@ export default function ChooseUs() {
       {/* Image 1: Top Left (Portrait) */}
       <div className="hidden md:block absolute top-[10%] left-[8%] lg:left-[12%] w-[180px] lg:w-[220px] aspect-[4/5] bg-[#12241e] shadow-2xl group transition-transform duration-500 hover:scale-105 hover:z-20">
         <Image
-          src="/choose-1.png"
+          src="/choose -1.png"
           alt="Handcrafted green and gold silk thread bangles"
           fill
           sizes="(max-width: 1024px) 180px, 220px"
@@ -66,7 +66,7 @@ export default function ChooseUs() {
       <div className="md:hidden grid grid-cols-2 gap-4 mt-16 relative z-10 max-w-sm mx-auto w-full">
         <div className="relative w-full aspect-[4/5] bg-[#12241e]">
           <Image
-            src="/choose-1.png"
+            src="/choose -1.png"
             alt="Handcrafted green and gold silk thread bangles"
             fill
             sizes="50vw"
