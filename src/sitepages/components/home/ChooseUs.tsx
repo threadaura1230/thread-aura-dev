@@ -25,7 +25,7 @@ export default function ChooseUs() {
           src="/choose-2.png"
           alt="Crimson red silk thread bangle"
           fill
-          sizes="120px"
+          sizes="(max-width: 1024px) 180px, 220x"
           className="object-cover"
         />
       </div>
@@ -86,6 +86,15 @@ export default function ChooseUs() {
           <Image
             src="/choose-3.png"
             alt="Vibrant pastel silk thread bangles collection"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative w-full aspect-[3/2] bg-[#12241e] col-span-2">
+          <Image
+            src="/choose-4.png"
+            alt="Royal blue and gold silk thread bangles"
             fill
             sizes="100vw"
             className="object-cover"
