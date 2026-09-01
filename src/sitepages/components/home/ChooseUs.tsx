@@ -19,8 +19,8 @@ export default function ChooseUs() {
         />
       </div>
 
-      {/* Image 2: Top Right (Small Square) */}
-      <div className="hidden lg:block absolute top-[8%] right-[15%] w-[120px] aspect-square bg-[#12241e] shadow-2xl group transition-transform duration-500 hover:scale-105 hover:z-20">
+      {/* Image 2: Top Right (Portrait) */}
+      <div className="hidden md:block absolute top-[8%] right-[8%] lg:right-[12%] w-[180px] lg:w-[220px] aspect-[4/5] bg-[#12241e] shadow-2xl group transition-transform duration-500 hover:scale-105 hover:z-20">
         <Image
           src="/choose-2.png"
           alt="Crimson red silk thread bangle"
@@ -73,7 +73,7 @@ export default function ChooseUs() {
             className="object-cover"
           />
         </div>
-        <div className="relative w-full aspect-square bg-[#12241e] mt-8">
+        <div className="relative w-full aspect-[4/5] bg-[#12241e] mt-8">
           <Image
             src="/choose-2.png"
             alt="Crimson red silk thread bangle"
