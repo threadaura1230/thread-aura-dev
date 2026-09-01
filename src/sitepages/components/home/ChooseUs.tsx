@@ -25,7 +25,7 @@ export default function ChooseUs() {
           src="/choose-2.png"
           alt="Crimson red silk thread bangle"
           fill
-          sizes="(max-width: 1024px) 180px, 220x"
+          sizes="(max-width: 1024px) 180px, 220px"
           className="object-cover"
         />
       </div>
