@@ -69,7 +69,7 @@ export async function GET(request: Request) {
       .populate("collection", "name slug")
       .populate("subCollection", "name slug")
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1, _id: -1 });
 
     return NextResponse.json({ success: true, products });
   } catch (error) {

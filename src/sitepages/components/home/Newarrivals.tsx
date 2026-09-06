@@ -17,7 +17,9 @@ export default function NewArrivals() {
     const fetchNewArrivals = async () => {
       try {
         // Fetch top 5 products (sorted by createdAt: -1 in the API)
-        const res = await fetch("/api/manage-products/products?limit=5");
+        const res = await fetch("/api/manage-products/products?limit=5", {
+          cache: "no-store",
+        });
         const data = await res.json();
         if (data.success) {
           // Filter active ones

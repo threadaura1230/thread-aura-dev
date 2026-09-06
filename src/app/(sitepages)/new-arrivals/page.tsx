@@ -1,35 +1,56 @@
 import dbConnect from "@/lib/db";
 import Product from "@/models/products/products";
+import Collection from "@/models/products/collections";
+import SubCollection from "@/models/products/subcollection";
 import ProductCard from "@/sitepages/components/catalog/ProductCard";
 import { constructMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = constructMetadata({
   title: "New Arrivals - Thread Aura",
   description: "Explore our latest handcrafted, artisanal luxury thread bangles and collections.",
 });
 
+interface PopulatedRef {
+  _id?: string;
+  name?: string;
+  slug?: string;
+}
+
 export default async function NewArrivalsPage() {
   await dbConnect();
 
-  // Retrieve active products sorted by creation time to show the newest arrivals first
-  const dbProducts = await Product.find({ isActive: true })
+  // Ensure Collection and SubCollection models are registered in Mongoose
+  void Collection;
+  void SubCollection;
+
+  // Retrieve active products sorted by creation time (and _id) to show the newest arrivals first
+  const dbProducts = await Product.find({ isActive: { $ne: false } })
     .populate("collection")
     .populate("subCollection")
-    .sort({ createdAt: -1 })
-    .limit(12);
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(48);
 
-  const newProducts = dbProducts.map((p) => ({
-    id: p._id.toString(),
-    name: p.name,
-    price: p.price,
-    material: p.material || "",
-    tag: p.tag || "",
-    bgColor: p.bgColor || "#1f332a",
-    images: p.images || [],
-    slug: p.slug,
-    subCollectionSlug: p.subCollection && typeof p.subCollection === "object" ? (p.subCollection as any).slug : "general",
-    categorySlug: p.collection && typeof p.collection === "object" ? (p.collection as any).slug : "collections"
-  }));
+  const newProducts = dbProducts.map((p) => {
+    const subCol = p.subCollection as PopulatedRef | undefined;
+    const col = p.collection as PopulatedRef | undefined;
+
+    return {
+      id: p._id.toString(),
+      name: p.name,
+      price: p.price,
+      material: p.material || "",
+      tag: p.tag || "",
+      bgColor: p.bgColor || "#1f332a",
+      images: p.images || [],
+      sizes: p.sizes || [],
+      slug: p.slug,
+      subCollectionSlug: subCol?.slug || "general",
+      categorySlug: col?.slug || "collections",
+    };
+  });
 
   return (
     <div className="bg-[#F1EFE7] min-h-screen py-24 px-6 md:px-8 lg:px-12">
