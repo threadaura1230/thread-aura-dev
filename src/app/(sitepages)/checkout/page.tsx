@@ -492,23 +492,21 @@ export default function CheckoutPage() {
 
                   {/* COD Option */}
                   <label 
-                    onClick={() => setPaymentMethod("COD")}
-                    className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer bg-white ${
-                      paymentMethod === "COD" 
-                        ? "border-[#0F3A2A] shadow-sm" 
-                        : "border-black/[0.05] hover:border-black/[0.12]"
-                    }`}
+                    className="flex items-start gap-3 p-4 rounded-xl border-2 transition-all bg-slate-50 border-slate-200/50 opacity-60 cursor-not-allowed"
                   >
                     <input
                       type="radio"
                       name="payment_choice"
-                      checked={paymentMethod === "COD"}
+                      disabled
+                      checked={false}
                       readOnly
-                      className="mt-1 accent-[#0F3A2A]"
+                      className="mt-1 accent-slate-400 cursor-not-allowed"
                     />
                     <div>
-                      <p className="text-[13px] font-semibold text-slate-900 leading-tight">Cash on Delivery</p>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-normal">
+                      <p className="text-[13px] font-semibold text-slate-500 leading-tight">
+                        Cash on Delivery <span className="text-[11px] text-red-500 font-normal ml-1">(Temporarily Unavailable)</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1 leading-normal">
                         Pay cash directly to executive upon receiving order.
                       </p>
                     </div>
