@@ -82,8 +82,10 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
         subCollection: subCollection._id,
         isActive: true,
     };
-    const distinctMaterials = (await Product.distinct("material", subFilter)).filter(Boolean) as string[];
-    const distinctColors = (await Product.distinct("color", subFilter)).filter(Boolean) as string[];
+    const rawMaterials = (await Product.distinct("material", subFilter)) as string[];
+    const distinctMaterials = Array.from(new Set(rawMaterials.filter(Boolean).map(m => m.trim())));
+    const rawColors = (await Product.distinct("color", subFilter)) as string[];
+    const distinctColors = Array.from(new Set(rawColors.filter(Boolean).map(c => c.trim())));
 
     // Get max price for slider
     const maxPriceResult = await Product.findOne(subFilter).sort({ price: -1 }).select("price").lean() as { price?: number } | null;
@@ -97,12 +99,12 @@ export default async function SubcatalogPage({ params, searchParams }: PageProps
     };
 
     if (activeMaterial) {
-        const materials = activeMaterial.split(",");
+        const materials = activeMaterial.split(",").map(m => m.trim()).filter(Boolean);
         query.material = { $in: materials };
     }
 
     if (activeColor) {
-        const colors = activeColor.split(",");
+        const colors = activeColor.split(",").map(c => c.trim()).filter(Boolean);
         query.color = { $in: colors };
     }
 

@@ -151,10 +151,17 @@ export default function FilterSidebar({
         router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     };
 
-    const activeMaterials = searchParams.get("material")?.split(",") || [];
-    const activeColors = searchParams.get("color")?.split(",") || [];
-    const activeSubCols = searchParams.get("subCollection")?.split(",") || [];
+    const activeMaterials = (searchParams.get("material")?.split(",") || []).map(m => m.trim()).filter(Boolean);
+    const activeColors = (searchParams.get("color")?.split(",") || []).map(c => c.trim()).filter(Boolean);
+    const activeSubCols = (searchParams.get("subCollection")?.split(",") || []).map(s => s.trim()).filter(Boolean);
     const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < maxPrice;
+
+    // Deduplicate lists to avoid duplicate items in sidebar filters
+    const uniqueMaterials = Array.from(new Set(materials.map(m => m.trim()).filter(Boolean)));
+    const uniqueColors = Array.from(new Set(colors.map(c => c.trim()).filter(Boolean)));
+    const uniqueSubCollections = Array.from(
+        new Map(subCollections.map(s => [s.slug, s])).values()
+    );
 
     // Round max price to nearest nice step
     const step = maxPrice <= 1000 ? 50 : maxPrice <= 5000 ? 100 : 500;
@@ -168,7 +175,7 @@ export default function FilterSidebar({
                 </h3>
 
                 {/* ── Sub-Collection Filter ── */}
-                {subCollections.length > 0 && (
+                {uniqueSubCollections.length > 0 && (
                     <div className="mb-6 pb-6 border-b border-black/5">
                         <button
                             onClick={() => toggleSection("subCollection")}
@@ -180,10 +187,10 @@ export default function FilterSidebar({
 
                         {openSections.subCollection && (
                             <div className="mt-4 space-y-3">
-                                {subCollections.map((subCol) => {
+                                {uniqueSubCollections.map((subCol) => {
                                     const isChecked = activeSubCols.includes(subCol.slug);
                                     return (
-                                        <label key={subCol._id} className="flex items-center gap-3 cursor-pointer group">
+                                        <label key={subCol._id || subCol.slug} className="flex items-center gap-3 cursor-pointer group">
                                             <div className="relative w-4 h-4 border border-slate-300 rounded-[2px] group-hover:border-[#134A31] transition-colors">
                                                 <input
                                                     type="checkbox"
@@ -205,7 +212,7 @@ export default function FilterSidebar({
                 )}
 
                 {/* ── Material Filter ── */}
-                {materials.length > 0 && (
+                {uniqueMaterials.length > 0 && (
                     <div className="mb-6 pb-6 border-b border-black/5">
                         <button
                             onClick={() => toggleSection("material")}
@@ -217,10 +224,10 @@ export default function FilterSidebar({
 
                         {openSections.material && (
                             <div className="mt-4 space-y-3">
-                                {materials.map((item, idx) => {
+                                {uniqueMaterials.map((item) => {
                                     const isChecked = activeMaterials.includes(item);
                                     return (
-                                        <label key={idx} className="flex items-center gap-3 cursor-pointer group">
+                                        <label key={item} className="flex items-center gap-3 cursor-pointer group">
                                             <div className="relative w-4 h-4 border border-slate-300 rounded-[2px] group-hover:border-[#134A31] transition-colors">
                                                 <input
                                                     type="checkbox"
@@ -242,7 +249,7 @@ export default function FilterSidebar({
                 )}
 
                 {/* ── Color Filter ── */}
-                {colors.length > 0 && (
+                {uniqueColors.length > 0 && (
                     <div className="mb-6 pb-6 border-b border-black/5">
                         <button
                             onClick={() => toggleSection("color")}
@@ -254,11 +261,11 @@ export default function FilterSidebar({
 
                         {openSections.color && (
                             <div className="mt-4 flex flex-wrap gap-2.5">
-                                {colors.map((clr, idx) => {
+                                {uniqueColors.map((clr) => {
                                     const isChecked = activeColors.includes(clr);
                                     return (
                                         <button
-                                            key={idx}
+                                            key={clr}
                                             onClick={() => handleToggleList("color", clr)}
                                             title={getColorName(clr)}
                                             className={`relative w-8 h-8 rounded-full border-2 transition-all duration-200 flex items-center justify-center ${

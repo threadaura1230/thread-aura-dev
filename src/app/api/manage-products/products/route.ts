@@ -133,15 +133,15 @@ export async function POST(request: Request) {
     }
 
     const newProduct = await Product.create({
-      name,
+      name: typeof name === "string" ? name.trim() : name,
       slug,
-      description: description || "",
+      description: typeof description === "string" ? description.trim() : "",
       price: Number(price),
       images: images || [],
       collection,
       subCollection,
-      material: material || "",
-      tag: tag || "",
+      material: typeof material === "string" ? material.trim() : "",
+      tag: typeof tag === "string" ? tag.trim() : "",
       bgColor: bgColor || "#1f332a",
       color: color || "",
       sizes: sizes || ["2.0", "2.2", "2.4", "2.6", "2.8", "2.10", "2.12"],

@@ -5,15 +5,18 @@ const ProductSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
     slug: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     description: {
       type: String,
       default: "",
+      trim: true,
     },
     price: {
       type: Number,
@@ -34,10 +37,12 @@ const ProductSchema = new mongoose.Schema(
     material: {
       type: String,
       default: "",
+      trim: true,
     },
     tag: {
       type: String,
       default: "",
+      trim: true,
     },
     bgColor: {
       type: String,

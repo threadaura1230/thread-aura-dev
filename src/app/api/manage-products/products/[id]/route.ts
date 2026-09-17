@@ -66,11 +66,11 @@ export async function PUT(
       product.slug = slug;
     }
 
-    if (body.description !== undefined) product.description = body.description;
+    if (body.description !== undefined) product.description = typeof body.description === "string" ? body.description.trim() : body.description;
     if (body.price !== undefined) product.price = Number(body.price);
     if (body.images !== undefined) product.images = body.images;
-    if (body.material !== undefined) product.material = body.material;
-    if (body.tag !== undefined) product.tag = body.tag;
+    if (body.material !== undefined) product.material = typeof body.material === "string" ? body.material.trim() : body.material;
+    if (body.tag !== undefined) product.tag = typeof body.tag === "string" ? body.tag.trim() : body.tag;
     if (body.bgColor !== undefined) product.bgColor = body.bgColor;
     if (body.color !== undefined) product.color = body.color;
     if (body.sizes !== undefined) product.sizes = body.sizes;

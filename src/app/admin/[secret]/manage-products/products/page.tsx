@@ -274,14 +274,14 @@ export default function ProductsManager() {
     }
 
     const payload = {
-      name,
+      name: name.trim(),
       price: Number(price),
-      description,
+      description: description.trim(),
       images,
       collection: collectionId,
       subCollection: subCollectionId,
-      material,
-      tag,
+      material: material.trim(),
+      tag: tag.trim(),
       bgColor,
       color,
       sizes,
