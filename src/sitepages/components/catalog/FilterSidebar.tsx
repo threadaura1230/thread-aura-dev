@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Check, X } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
@@ -53,13 +53,13 @@ function getSwatchStyle(color: string): React.CSSProperties {
     return { backgroundColor: val || "#a0a0a0" };
 }
 
-function getColorName(color: string): string {
+function getColorName(color: string): string | undefined {
     const key = color.toLowerCase().trim();
     const entry = Object.entries(COLOR_SWATCHES).find(([_, hex]) => hex.toLowerCase() === key);
     if (entry) {
         return entry[0];
     }
-    return color;
+    return key.startsWith("#") ? undefined : color;
 }
 
 export default function FilterSidebar({
@@ -289,23 +289,6 @@ export default function FilterSidebar({
                             </div>
                         )}
 
-                        {/* Active color chips */}
-                        {activeColors.length > 0 && openSections.color && (
-                            <div className="mt-3 flex flex-wrap gap-1.5">
-                                {activeColors.map((clr) => (
-                                    <span
-                                        key={clr}
-                                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#134A31]/10 text-[#134A31] rounded-full text-[11px] font-medium capitalize"
-                                    >
-                                        {getColorName(clr)}
-                                        <X
-                                            className="w-3 h-3 cursor-pointer hover:text-red-600 transition-colors"
-                                            onClick={() => handleToggleList("color", clr)}
-                                        />
-                                    </span>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 )}
 
